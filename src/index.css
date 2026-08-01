@@ -1,0 +1,539 @@
+@import './webflow.css';
+
+/* Custom Fluid Responsive Font Size Calculations from Webflow Export */
+html { font-size: 1rem; }
+@media screen and (max-width:1440px) { html { font-size: calc(-0.0006236080178174674rem + 1.111804008908686vw); } }
+@media screen and (min-width: 768px) and (max-width: 991px) { 
+  html { font-size: 12px; } 
+}
+@media screen and (max-width:767px) { html { font-size: calc(0.0010050251256281673rem + 2.814070351758794vw); } }
+@media screen and (max-width:568px) { html { font-size: calc(-0.0019775280898881586rem + 2.822471910112361vw); } }
+@media screen and (max-width:479px) { html { font-size: calc(0.0008988764044947084rem + 4.098876404494381vw); } }
+@media screen and (max-width:390px) { html { font-size: calc(-0.002570694087403599rem + 4.113110539845758vw); } }
+
+/* Fix Webflow JS visibility override for GSAP target elements */
+html.w-mod-js:not(.w-mod-ix3) :is([data-wf-target*='["6a116b897b57804193b66818"'], .hero-discribe-wrap, .point-name, .foter-item-crest) {
+  visibility: visible !important;
+}
+
+/* Global Crisp Text Rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Preloader Styles */
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #D6CBC5;
+  z-index: 9999;
+  will-change: opacity;
+  overflow: hidden;
+}
+
+.loader svg {
+  width: 85%;
+  height: 85%;
+  max-width: 800px;
+  will-change: transform;
+}
+
+.loader svg path {
+  fill: none;
+  stroke: none;
+}
+
+.loader svg .orbit-text {
+  fill: #0f0f0f;
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 500;
+}
+
+@media (max-width: 767px) {
+  .loader svg .orbit-text {
+    font-size: 3rem; 
+  }
+}
+
+.counter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #0f0f0f;
+  text-transform: uppercase;
+}
+
+/* Ham6 Hamburger Icon Animations */
+.ham6 {
+  width: 2.5rem;  
+  height: 2.5rem; 
+  cursor: pointer;
+  transition: transform 400ms;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.line {
+  fill: none;
+  stroke: white; 
+  stroke-width: 5.5; 
+  stroke-linecap: round;
+  transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+}
+
+.ham6.active {
+  transform: rotate(90deg);
+}
+
+.ham6 .top { stroke-dasharray: 40 172; }
+.ham6 .middle { stroke-dasharray: 40 111; }
+.ham6 .bottom { stroke-dasharray: 40 172; }
+
+.ham6.active .top { stroke-dashoffset: -132px; }
+.ham6.active .middle { stroke-dashoffset: -71px; }
+.ham6.active .bottom { stroke-dashoffset: -132px; }
+
+/* Button2 Hover Effects */
+.button2 .button2_icon-wrap {
+  left: calc(100% - 0.5em);
+  transform: translateX(-100%);
+  transition: all 500ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+}
+
+.button2:hover .button2_icon-wrap {
+  left: 0.5em;
+  transform: translateX(0);
+  background: rgba(255,255,255,0);
+}
+
+.button2 .button2_text {
+  position: relative;
+  left: 0;
+  transition: all 500ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+}
+
+.button2:hover .button2_text {
+  left: 3.5em;
+}
+
+.button2 .button2_icon {
+  filter: invert(0%);
+  transition: all 500ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+}
+
+.button2:hover .button2_icon {
+  filter: invert(100%);
+}
+
+/* Hero Canvas Sequence Styles */
+.sequence-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+#sequence-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .sequence-container {
+    height: 70vh;
+  }
+  #sequence-canvas {
+    height: 100%;
+  }
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  bottom: 1.875rem;
+  right: 1.875rem;
+}
+
+.cursor-wrapper {
+  position: relative;
+  width: 6.25rem;
+  height: 6.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cursor-text {
+  animation: rotateText 8s linear infinite;
+  position: absolute;
+}
+
+@media (max-width: 48rem) {
+  .scroll-indicator {
+    bottom: auto;
+    top: 40%;
+    right: -3.125rem; 
+    transform: translateY(-50%);
+  }
+  .mouse-icon {
+    display: none; 
+  }
+}
+
+@keyframes rotateText {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.mouse-wheel {
+  animation: wheelScroll 1.5s ease-in-out infinite;
+}
+
+@keyframes wheelScroll {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(0.4375rem); opacity: 0; }
+}
+
+/* Vortex Text Styles */
+.vortex-text {
+  position: relative;
+}
+
+.char {
+  display: inline-block;
+  white-space: pre;
+  position: relative;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
+  opacity: 1;
+}
+
+/* SVG Signature */
+.scroll-signature {
+  width: 12rem;
+  height: 8rem;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto; 
+}
+
+/* Clock Styles */
+.svg-clock-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#tick-clock {
+  max-width: 100%;
+  height: auto;
+}
+
+.clock-tick {
+  stroke: #111111;
+  stroke-width: 1;
+  stroke-linecap: round;
+  opacity: 0.2;
+  transition: opacity 0.2s ease;
+  will-change: opacity;
+}
+
+.clock-tick.active {
+  opacity: 1;
+}
+
+/* Cards Section Styles */
+.cards {
+  position: relative;
+  width: 100vw;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18rem;   
+  height: 24rem;  
+  perspective: 1500px; 
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: floating 3s infinite ease-in-out;
+  transform-style: preserve-3d;
+}
+
+.card.card-1 .card-wrapper { animation-delay: 0s; }
+.card.card-2 .card-wrapper { animation-delay: 0.2s; }
+.card.card-3 .card-wrapper { animation-delay: 0.4s; }
+.card.card-4 .card-wrapper { animation-delay: 0.6s; }
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; 
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.8em;
+  overflow: hidden;
+}
+
+.flip-card-back {
+  padding: 2rem;
+  background-color: #ffffff;
+  color: #000000;
+  transform: rotateY(180deg);
+}
+
+.flip-card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+@media screen and (max-width: 768px) {
+  .cards {
+    height: auto !important;
+    padding: 10vh 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8vh; 
+  }
+
+  .card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 85vw !important;
+    height: 65vh !important; 
+    perspective: 1200px; 
+  }
+}
+
+/* 3D Prism Cube Work Section Styles */
+html.lenis, html.lenis body { height: auto; }
+.lenis-smooth { scroll-behavior: auto !important; }
+
+.work-section {
+  position: relative; 
+  width: 100%; 
+  height: 600vh; 
+  background: transparent;
+}
+
+.sticky-viewport {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.cube-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.cube-face {
+  background: #0e0c0b !important;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.cube-face video, .cube-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: relative;
+  z-index: 10;
+}
+
+.project-card-wb, .project-card-wb > div, .project-card-wb span, .card-btn {
+  border-radius: 0.5rem !important;
+}
+
+.project-card-wb, .project-card-wb *, .card-btn {
+  color: #ffffff !important;
+}
+
+.project-card-wb span { 
+  border: 1px solid rgba(255,255,255,0.1); 
+  font-family: 'DM Sans', sans-serif; 
+  font-size: 0.55rem; 
+  letter-spacing: 0.12em; 
+  text-transform: uppercase; 
+  padding: 0.25rem 0.6rem; 
+  margin: 0.15rem; 
+  display: inline-block;
+  position: relative;
+  z-index: 10;
+}
+
+.card-btn {
+  border: 1px solid rgba(255,255,255,0.1); 
+  font-family: 'DM Sans', sans-serif; 
+  font-size: 0.55rem; 
+  letter-spacing: 0.12em; 
+  text-transform: uppercase;
+  padding: 0.5rem 0.6rem; 
+  margin: 0.15rem; 
+  display: inline-block;
+  text-decoration: none !important; 
+  margin-top: 0.1rem !important;
+  position: relative;
+  z-index: 10;
+}
+
+#prism-cube { z-index: 5 !important; }
+.project-card-wb { z-index: 10 !important; }
+#intro-card { z-index: 10 !important; }
+
+.hud-container {
+  position: absolute; 
+  bottom: 2rem; 
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center; 
+  z-index: 20;
+}
+
+@media screen and (max-width: 767px) {
+  #prism-cube {
+    --cw: min(78vw, 340px) !important;
+    --ch: calc(var(--cw) * 9 / 16) !important;
+    position: absolute !important;
+    top: 30% !important; 
+    transform: translate(-50%, -50%);
+  }
+  .project-card-wb {
+    width: 88% !important;
+    max-width: 400px !important;
+    top: auto !important;
+    bottom: 10vh !important; 
+    transition: opacity 0.5s ease, transform 0.8s ease;
+  }
+  #card-left, #card-right {
+    left: 50% !important;
+    right: auto !important;
+  }
+  #intro-card {
+    top: 30% !important;
+  }
+}
+
+/* Button Fill Hover Animation */
+.btn-footer:hover .button-fill {
+  animation: fill-in 1000ms cubic-bezier(.19, 1, .22, 1) forwards;
+}
+
+.btn-footer:not(:hover) .button-fill {
+  animation: fill-out 1000ms cubic-bezier(.19, 1, .22, 1) forwards;
+}
+
+@keyframes fill-in {
+  from {
+    transform: translate(-100%, 100%);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes fill-out {
+  0% {
+    transform: translate(0, 0);
+  }
+  99% {
+    transform: translate(100%, -100%);
+  }
+  100% {
+    transform: translate(-100%, 100%);
+  }
+}
+
+/* Form Input Animations */
+.form_input-wrapper:has(.form_input:not(:placeholder-shown)) .form_input-bar-fill,
+.form_input-wrapper:has(.form_input:focus) .form_input-bar-fill {
+  transform: scale(1, 1);
+}
+
+.form_input-wrapper:has(.form_input:not(:placeholder-shown)) .tagline-dot,
+.form_input-wrapper:has(.form_input:focus) .tagline-dot {
+  background-color: var(--base-color-brand--accent);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: none;
+}

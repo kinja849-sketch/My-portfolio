@@ -1,0 +1,78 @@
+import React from 'react';
+
+export default function FooterContact({ onOpenContact }) {
+  return (
+    <footer id="footer" className="footer">
+      <div id="footernav" className="container-footer">
+        <div className="footer-heading-wrapper">
+          <div className="footer-line-head">
+            <div className="item-name">
+              <div className="hero-text">04 / Contact</div>
+            </div>
+            <div className="line-about"></div>
+          </div>
+
+          <h5 className="h5">Let’s work together</h5>
+
+          <a
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onOpenContact) onOpenContact();
+            }}
+            className="btn-lets-talk w-inline-block"
+          >
+            <div className="btn-contact">
+              <div className="btn-tete-wrap">
+                <div className="text-btn">Get in touch</div>
+                <img
+                  src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
+                  loading="lazy"
+                  alt="arrow"
+                  className="icon-btn"
+                />
+              </div>
+            </div>
+          </a>
+
+          <div className="item-name-footer">
+            <div className="point-name"></div>
+            <div className="hero-text is-black">
+              FNSH
+              <br />
+            </div>
+          </div>
+
+          <div className="foter-item-crest">
+            <div className="footer-crest"></div>
+            <div className="footer-crest-vert"></div>
+          </div>
+        </div>
+
+        <div className="footer-down-wrapper">
+          <div className="item-footer-down">
+            <div className="item-footer-wrap">
+              <a href="mailto:naliv9988@gmail.com" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
+                <div>EMAIL</div>
+              </a>
+              <a href="https://web.telegram.org/naliiiv" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
+                <div>TELEGRAM</div>
+              </a>
+              <a href="https://www.linkedin.com/in/andrey-nalivaiko-6258363a9" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
+                <div>LINKEDIN</div>
+              </a>
+            </div>
+
+            <div className="footer-wrap-down">
+              <div className="item-down-left">
+                <div className="text-block-9">
+                  2026 © Edition Najib Abdirhman . Crafted with code &amp; intent.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

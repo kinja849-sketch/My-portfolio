@@ -70,12 +70,12 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
-        // Vortex text assembly animation — assembles into centered paragraph
+        // Vortex text assembly animation — triggers when About section is in FULL VIEW
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
-            start: 'top 20%',
-            end: 'bottom 120%',
+            start: 'top 50%',
+            end: 'top 10%',
             scrub: window.innerWidth < 768 ? 0.8 : 1.2,
             invalidateOnRefresh: true,
           },
@@ -106,8 +106,8 @@ export default function AboutSection() {
         ease: 'power2.out',
         scrollTrigger: {
           trigger: aboutSection,
-          start: 'top 20%',
-          end: 'bottom 120%',
+          start: 'top 50%',
+          end: 'top 10%',
           scrub: window.innerWidth < 768 ? 0.8 : 1.2,
           invalidateOnRefresh: true,
         },
@@ -170,22 +170,22 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        <div className="about-heading-wrapper" style={{ textAlign: 'center' }}>
+        <div className="about-heading-wrapper" style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h3 className="head-servisec">
             ABOUT <em className="italic-text">Me</em>
           </h3>
         </div>
 
-        <div className="container-about-heading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-          {/* Profile image: Centered above paragraph text, slightly pushed upward on scroll without crossing the top line */}
-          <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+        <div className="container-about-heading">
+          {/* Profile image: Centered above paragraph text, slightly pushed upward on scroll without crossing top line */}
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <img
               ref={profileImageRef}
               src="/photo_2026-05-29_01-43-44-removebg-preview.png"
               loading="lazy"
               alt="Najib Abdirahman Mohammed"
               style={{
-                width: '8rem',
+                width: '8.5rem',
                 height: 'auto',
                 objectFit: 'contain',
                 borderRadius: '0.75rem',
@@ -197,14 +197,14 @@ export default function AboutSection() {
             />
           </div>
 
-          <div className="heading-about-wrapper" style={{ width: '100%', maxWidth: '42rem', display: 'flex', justifyContent: 'center', margin: '0 auto' }}>
-            <p ref={vortexTextRef} className="vortex-text" style={{ textAlign: 'center', margin: '0 auto', fontSize: '1.25rem', lineHeight: '1.6' }}>
+          <div className="heading-about-wrapper" style={{ width: '100%', maxWidth: '44rem', margin: '0 auto' }}>
+            <p ref={vortexTextRef} className="vortex-text" style={{ textAlign: 'center', margin: '0 auto', fontSize: '1.25rem', lineHeight: '1.65', color: '#111' }}>
               I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications using modern technologies (JavaScript, React, Node.js, Supabase) focusing on creating efficient, user-friendly, and scalable solutions. I am fluent in English, Swahili, and Somali, with conversational Arabic. My goal is to grow as a full-stack developer, delivering high-quality products while applying the same precision and efficiency I bring to financial analysis and operations.
             </p>
           </div>
         </div>
 
-        <div className="clock-container">
+        <div className="clock-container" style={{ marginTop: '3rem' }}>
           <div className="code-clock w-embed w-script">
             <div className="svg-clock-wrapper">
               <svg id="tick-clock" width="120" height="120" viewBox="0 0 120 120">

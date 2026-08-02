@@ -3231,22 +3231,18 @@ figcaption {
 }
 
 .section_about {
-  z-index: 2;
+  z-index: 10;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   background-color: #fff;
   border-radius: 2rem;
-  grid-template-rows: auto 100vh auto;
-  grid-template-columns: 1fr;
-  grid-auto-columns: 1fr;
-  justify-content: center;
-  align-items: flex-start;
   width: 100%;
-  height: 200vh;
+  min-height: 120vh;
+  height: auto;
   margin-top: 0;
   display: flex;
   position: relative;
-  overflow: clip;
+  overflow: visible;
 }
 
 .h1 {
@@ -3427,12 +3423,12 @@ figcaption {
   align-items: center;
   width: 100%;
   max-width: 100rem;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   margin-left: auto;
   margin-right: auto;
-  padding: 5rem 1.87rem 10rem;
-  position: sticky;
-  top: 0;
+  padding: 5rem 1.87rem 8rem;
+  position: relative;
 }
 
 .heading-about-wrapper {
@@ -3595,11 +3591,12 @@ figcaption {
   z-index: 3;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
-  position: absolute;
-  inset: 0%;
+  position: relative;
+  margin-top: 2rem;
 }
 
 .about-line-head {

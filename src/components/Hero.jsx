@@ -6,11 +6,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const sectionRef = useRef(null);
+  const headingContainerRef = useRef(null);
   const rightColumnRef = useRef(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const rightCol = rightColumnRef.current;
+    const headingContainer = headingContainerRef.current;
     if (!section || !rightCol) return;
 
     const stackGroups = rightCol.querySelectorAll('.hero-discribe-wrap');
@@ -19,7 +21,7 @@ export default function Hero() {
     // Initially hide all category stack groups completely
     gsap.set(stackGroups, { opacity: 0, display: 'none' });
 
-    // Show ONLY category 1 (Frontend) at the very start (frames 1-75)
+    // Show ONLY category 1 (Frontend) at the very start
     gsap.set(stackGroups[0], { opacity: 1, display: 'block' });
 
     // GSAP ScrollTrigger timeline: As frames rotate, stack categories appear ONE BY ONE.
@@ -56,6 +58,20 @@ export default function Hero() {
         .to(stackGroups[3], { opacity: 0, display: 'none', duration: 0.3 });
     }
 
+    // Fade out ALL hero text & headers as user leaves hero section so NOTHING bleeds into About Me
+    if (headingContainer) {
+      gsap.to(headingContainer, {
+        opacity: 0,
+        ease: 'power1.out',
+        scrollTrigger: {
+          trigger: section,
+          start: '80% top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    }
+
     // Fade out scroll indicator on initial scroll
     gsap.to('#scroll-indicator', {
       opacity: 0,
@@ -73,7 +89,7 @@ export default function Hero() {
     <section ref={sectionRef} id="hero" className="section_hero">
       <div id="sticky-wrapper" className="container-hero">
         <div className="hero-wrapper-content">
-          <div className="hero-heading-container">
+          <div ref={headingContainerRef} className="hero-heading-container">
             <div className="hero-headig-left">
               <div className="heading-item">
                 <div className="name-heading-wrapper">

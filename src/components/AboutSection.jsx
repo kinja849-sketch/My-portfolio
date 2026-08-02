@@ -98,25 +98,18 @@ export default function AboutSection() {
       });
     }
 
-    // 2. Profile Image Animation: Initial centered position -> pushes UPWARDS & towards LEFT side on scroll as fonts take shape
+    // 2. Profile Image Animation: Subtle upward translation (-30px) in original horizontal alignment
     if (profileImageRef.current && aboutSection) {
       const isMobile = window.innerWidth < 768;
 
       gsap.set(profileImageRef.current, {
-        left: '50%',
-        top: '50%',
-        xPercent: -50,
-        yPercent: -50,
-        opacity: 0.9,
+        y: 0,
+        x: 0,
       });
 
       gsap.to(profileImageRef.current, {
-        left: isMobile ? '5%' : '10%',
-        top: '-15%',
-        xPercent: 0,
-        yPercent: 0,
-        opacity: 1,
-        ease: 'power2.inOut',
+        y: -30,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: aboutSection,
           start: 'top 20%',
@@ -183,31 +176,27 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        {/* Centered ABOUT Me header - Me retains its position */}
-        <div className="about-heading-wrapper" style={{ textAlign: 'center', position: 'relative' }}>
+        {/* Heading reads "ABOUT Me" at exact original position */}
+        <div className="about-heading-wrapper">
           <h3 className="head-servisec">
             ABOUT <em className="italic-text">Me</em>
           </h3>
         </div>
 
         <div className="container-about-heading" style={{ position: 'relative' }}>
-          {/* Profile Image: Initially centered, then pushes UPWARDS and towards LEFT side on scroll without distortion */}
+          {/* Profile Image: Retains original horizontal alignment, receives only subtle upward offset (-30px) on scroll */}
           <img
             ref={profileImageRef}
             src="/photo_2026-05-29_01-43-44-removebg-preview.png"
             loading="lazy"
             alt="Najib Abdirahman Mohammed"
+            className="image-4"
             style={{
-              width: '8.5rem',
-              height: 'auto',
-              maxHeight: '9rem',
-              objectFit: 'contain',
-              borderRadius: '0.75rem',
+              right: '2rem',
+              top: '0.5rem',
               position: 'absolute',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-              willChange: 'transform, left, top',
+              willChange: 'transform',
               zIndex: 10,
-              pointerEvents: 'none'
             }}
           />
 

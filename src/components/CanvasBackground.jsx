@@ -55,10 +55,22 @@ export default function CanvasBackground() {
       if (clamped === lastDrawnFrame) return;
       lastDrawnFrame = clamped;
 
-      const img = images[clamped - 1];
-      if (img && img.complete && img.naturalWidth !== 0) {
+      let img = images[clamped - 1];
+      if (!img) {
+        img = new Image();
+        img.src = getImgSrc(clamped);
+        images[clamped - 1] = img;
+        img.onload = () => {
+          if (Math.round(frameObj.frame) === clamped) {
+            requestAnimationFrame(() => draw(img));
+          }
+        };
+        return;
+      }
+
+      if (img.complete && img.naturalWidth !== 0) {
         requestAnimationFrame(() => draw(img));
-      } else if (img) {
+      } else {
         img.onload = () => {
           if (Math.round(frameObj.frame) === clamped) {
             requestAnimationFrame(() => draw(img));
@@ -77,8 +89,8 @@ export default function CanvasBackground() {
       }
     }
 
-    // Frame sequence scrubs ONLY within the hero section
-    const heroSection = document.querySelector('.section_hero');
+    // Frame sequence trigger target on .section_hero
+    const heroSection = document.getElementById('hero') || document.querySelector('.section_hero');
     if (!heroSection) return;
 
     const frameTrigger = gsap.to(frameObj, {
@@ -88,7 +100,7 @@ export default function CanvasBackground() {
         trigger: heroSection,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: isMobile ? 0.4 : 0.2,
+        scrub: isMobile ? 0.3 : 0.15,
         invalidateOnRefresh: true,
       },
       onUpdate: function () {
@@ -96,7 +108,7 @@ export default function CanvasBackground() {
       },
     });
 
-    // Fade out the entire canvas container as user leaves the hero section
+    // Fade out canvas container as user leaves hero section
     gsap.to(container, {
       opacity: 0,
       ease: 'none',
@@ -108,10 +120,16 @@ export default function CanvasBackground() {
       },
     });
 
-    const handleRefresh = () => ScrollTrigger.refresh();
+    // Robust Refresh for Netlify production deployment
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
     window.addEventListener('resize', handleRefresh);
     window.addEventListener('load', handleRefresh);
-    setTimeout(handleRefresh, 500);
+    setTimeout(handleRefresh, 300);
+    setTimeout(handleRefresh, 1000);
+    setTimeout(handleRefresh, 2500);
 
     return () => {
       window.removeEventListener('resize', handleRefresh);

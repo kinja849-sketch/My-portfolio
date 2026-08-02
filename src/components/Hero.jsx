@@ -16,40 +16,44 @@ export default function Hero() {
     const stackGroups = rightCol.querySelectorAll('.hero-discribe-wrap');
     if (!stackGroups.length) return;
 
-    // Initially dim all category stack groups
-    gsap.set(stackGroups, { opacity: 0.25, scale: 0.96, y: 15 });
+    // Initially hide all category stack groups completely
+    gsap.set(stackGroups, { opacity: 0, display: 'none' });
 
-    // Create scroll trigger timeline to select items one by one as user scrolls through the hero section
+    // Show ONLY category 1 (Frontend) at the very start (frames 1-75)
+    gsap.set(stackGroups[0], { opacity: 1, display: 'block' });
+
+    // GSAP ScrollTrigger timeline: As frames rotate, stack categories appear ONE BY ONE.
+    // When one appears, the previous one COMPLETELY disappears from the screen!
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.5,
+        scrub: true,
         invalidateOnRefresh: true,
       },
     });
 
-    // Step 1: Highlight Frontend (Category 1)
-    tl.to(stackGroups[0], { opacity: 1, scale: 1.05, y: 0, duration: 1 })
-      .to(stackGroups[0], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+    // Segment 1 (0% to 25% scroll): Frontend visible -> then COMPLETELY DISAPPEARS
+    tl.to(stackGroups[0], { opacity: 1, display: 'block', duration: 1 })
+      .to(stackGroups[0], { opacity: 0, display: 'none', duration: 0.3 });
 
-    // Step 2: Highlight Backend (Category 2)
+    // Segment 2 (25% to 50% scroll): Backend appears -> then COMPLETELY DISAPPEARS
     if (stackGroups[1]) {
-      tl.to(stackGroups[1], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
-        .to(stackGroups[1], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+      tl.to(stackGroups[1], { opacity: 1, display: 'block', duration: 1 })
+        .to(stackGroups[1], { opacity: 0, display: 'none', duration: 0.3 });
     }
 
-    // Step 3: Highlight Education (Category 3)
+    // Segment 3 (50% to 75% scroll): Education appears -> then COMPLETELY DISAPPEARS
     if (stackGroups[2]) {
-      tl.to(stackGroups[2], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
-        .to(stackGroups[2], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+      tl.to(stackGroups[2], { opacity: 1, display: 'block', duration: 1 })
+        .to(stackGroups[2], { opacity: 0, display: 'none', duration: 0.3 });
     }
 
-    // Step 4: Highlight Languages (Category 4)
+    // Segment 4 (75% to 100% scroll): Languages appears -> then COMPLETELY DISAPPEARS near end of hero
     if (stackGroups[3]) {
-      tl.to(stackGroups[3], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
-        .to(stackGroups[3], { opacity: 0.8, scale: 1, y: 0, duration: 1 });
+      tl.to(stackGroups[3], { opacity: 1, display: 'block', duration: 1 })
+        .to(stackGroups[3], { opacity: 0, display: 'none', duration: 0.3 });
     }
 
     // Fade out scroll indicator on initial scroll
@@ -137,9 +141,9 @@ export default function Hero() {
 
             <div className="hero-headig-center"></div>
 
-            {/* Category stack: selected one by one via ScrollTrigger timeline */}
+            {/* Category stack: As frame rotates on scroll, categories appear ONE BY ONE, and as one appears, the previous completely disappears */}
             <div ref={rightColumnRef} className="hero-headig-right">
-              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
+              <div className="hero-discribe-wrap">
                 <div className="text-hero">Frontend</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack">JavaScript (ES6+)</div>
@@ -147,7 +151,7 @@ export default function Hero() {
                   <div className="tetxt-stack is-3">ReactJS &amp; Tailwind CSS</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
+              <div className="hero-discribe-wrap">
                 <div className="text-hero">Backend</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack is-4">NodeJS</div>
@@ -155,14 +159,14 @@ export default function Hero() {
                   <div className="tetxt-stack is-6">REST &amp; Webhooks</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
+              <div className="hero-discribe-wrap">
                 <div className="text-hero">Education</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack is-8">B. Finance &amp; Accounting</div>
                   <div className="tetxt-stack is-9">Muhammadiyah Univ. Indonesia</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
+              <div className="hero-discribe-wrap">
                 <div className="text-hero">Languages</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack">English &amp; Swahili (Native)</div>

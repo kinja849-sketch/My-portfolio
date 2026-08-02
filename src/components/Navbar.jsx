@@ -11,10 +11,11 @@ export default function Navbar({ onOpenContact }) {
           <div className="nav_container">
             <a href="#hero" className="nav_brand w-nav-brand">
               <img
-                src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a16b0ec12e768c86f236ff7_IMG_4698%201.svg"
+                src="/Silhouette For Najib Abdirahman portfolio.jpg"
                 loading="lazy"
-                alt="Logo"
+                alt="Najib Abdirahman Silhouette Logo"
                 className="nav_logo"
+                style={{ objectFit: 'cover', borderRadius: '4px' }}
               />
               <div className="text-logo">
                 NAJIB

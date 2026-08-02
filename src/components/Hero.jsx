@@ -174,20 +174,7 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="hero-headig-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img
-                src="/Silhouette For Najib Abdirahman portfolio.jpg"
-                alt="Silhouette Najib Abdirahman"
-                style={{
-                  maxHeight: '320px',
-                  maxWidth: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '1rem',
-                  opacity: 0.9,
-                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
-                }}
-              />
-            </div>
+            <div className="hero-headig-center"></div>
 
             <div className="hero-headig-right">
               <div className="hero-discribe-wrap">

@@ -5,21 +5,22 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function StackSection() {
-  const cardsContainerRef = useRef(null);
+  const sectionRef = useRef(null);
+  const cardsRef = useRef(null);
 
   useEffect(() => {
-    const mainTrigger = cardsContainerRef.current;
-    if (!mainTrigger) return;
+    const sectionEl = sectionRef.current;
+    const cardsEl = cardsRef.current;
+    if (!sectionEl || !cardsEl) return;
 
-    const cards = gsap.utils.toArray('.card', mainTrigger);
+    const cards = gsap.utils.toArray('.card', cardsEl);
     if (!cards.length) return;
 
-    let mm = gsap.matchMedia();
+    const mm = gsap.matchMedia();
 
-    // Desktop Fan-Out Animation
+    // Desktop: fan-out + flip, using native scroll through section height
     mm.add('(min-width: 769px)', () => {
       const rotations = [-15, -7.5, 7.5, 15];
-      const baseCardWidth = cards[0].offsetWidth || 288;
 
       gsap.set(cards, {
         position: 'absolute',
@@ -33,24 +34,23 @@ export default function StackSection() {
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: mainTrigger,
+          trigger: cardsEl,
           start: 'top top',
-          end: () => `+=${window.innerHeight * 4}`,
-          pin: true,
-          pinSpacing: true,
-          scrub: 1.2,
+          end: 'bottom bottom',
+          scrub: 0.8,
           invalidateOnRefresh: true,
         },
       });
 
-      // Fan out cards
+      // Fan out cards from stacked center
       cards.forEach((card, index) => {
+        const baseWidth = card.offsetWidth || 288;
         tl.to(
           card,
           {
             x: () => {
-              const gap = baseCardWidth * 0.15;
-              const step = baseCardWidth + gap;
+              const gap = baseWidth * 0.15;
+              const step = baseWidth + gap;
               const offsets = [-step * 1.5, -step * 0.5, step * 0.5, step * 1.5];
               return offsets[index];
             },
@@ -62,7 +62,7 @@ export default function StackSection() {
         );
       });
 
-      // 3D Flip
+      // 3D Flip each card in sequence
       cards.forEach((card, index) => {
         const frontEl = card.querySelector('.flip-card-front');
         const backEl = card.querySelector('.flip-card-back');
@@ -77,7 +77,7 @@ export default function StackSection() {
       });
     });
 
-    // Mobile Vertical Stack Flip
+    // Mobile: vertical stack flip
     mm.add('(max-width: 768px)', () => {
       gsap.set(cards, {
         position: 'relative',
@@ -108,24 +108,18 @@ export default function StackSection() {
 
           mobileTl.to(frontEl, { rotateY: -180, ease: 'power2.out' }, 0);
           mobileTl.to(backEl, { rotateY: 0, ease: 'power2.out' }, 0);
-          mobileTl.to(
-            card,
-            {
-              z: 80,
-              scale: 1.02,
-              yoyo: true,
-              repeat: 1,
-              ease: 'power2.inOut',
-            },
-            0
-          );
+          mobileTl.to(card, { z: 80, scale: 1.02, yoyo: true, repeat: 1, ease: 'power2.inOut' }, 0);
         }
       });
     });
+
+    return () => {
+      mm.revert();
+    };
   }, []);
 
   return (
-    <div className="section-stack">
+    <div ref={sectionRef} className="section-stack">
       <div className="bg-video">
         <video
           autoPlay
@@ -139,7 +133,7 @@ export default function StackSection() {
         </video>
       </div>
 
-      <section ref={cardsContainerRef} id="stack" className="cards">
+      <section ref={cardsRef} id="stack" className="cards">
         {/* Card 1 */}
         <div className="card card-1">
           <div className="card-wrapper">
@@ -151,11 +145,7 @@ export default function StackSection() {
                 <div className="name-cadr-center">
                   <div className="text-name-card">T</div>
                 </div>
-                <img
-                  src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp"
-                  loading="lazy"
-                  alt="card bg"
-                />
+                <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
                   <div className="number-card">01</div>
                 </div>
@@ -186,11 +176,7 @@ export default function StackSection() {
                 <div className="name-cadr-center">
                   <div className="text-name-card">E</div>
                 </div>
-                <img
-                  src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp"
-                  loading="lazy"
-                  alt="card bg"
-                />
+                <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
                   <div className="number-card">02</div>
                 </div>
@@ -221,11 +207,7 @@ export default function StackSection() {
                 <div className="name-cadr-center">
                   <div className="text-name-card">C</div>
                 </div>
-                <img
-                  src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp"
-                  loading="lazy"
-                  alt="card bg"
-                />
+                <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
                   <div className="number-card">03</div>
                 </div>
@@ -256,11 +238,7 @@ export default function StackSection() {
                 <div className="name-cadr-center">
                   <div className="text-name-card">H</div>
                 </div>
-                <img
-                  src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp"
-                  loading="lazy"
-                  alt="card bg"
-                />
+                <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
                   <div className="number-card">04</div>
                 </div>

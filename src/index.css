@@ -270,11 +270,12 @@ body {
   opacity: 1;
 }
 
-/* Cards Section Styles */
+/* Cards Section Styles — needs tall height for desktop fan-out scroll animation */
 .cards {
   position: relative;
   width: 100vw;
-  overflow: hidden;
+  height: 300vh;
+  overflow: visible;
   background-color: transparent;
 }
 
@@ -369,15 +370,14 @@ body {
 html.lenis, html.lenis body { height: auto; }
 .lenis-smooth { scroll-behavior: auto !important; }
 
-.work-section {
-  position: relative; 
-  width: 100%; 
-  height: 600vh; 
-  background: transparent;
-}
+/* Work section height comes from webflow.css (600vh). 
+   Do NOT override it here — it drives the native scroll distance. */
 
+/* sticky-viewport must be position:sticky so it stays visible 
+   as the user scrolls through the 600vh parent. */
 .sticky-viewport {
-  position: relative;
+  position: sticky;
+  top: 0;
   width: 100%;
   height: 100vh;
   overflow: hidden;

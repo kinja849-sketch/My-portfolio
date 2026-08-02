@@ -112,13 +112,13 @@ export default function WorkSection() {
 
     let lastSceneIndex = -1;
 
+    // Use the NATIVE 600vh height from webflow.css + sticky-viewport for pinning.
+    // ScrollTrigger only tracks progress — NO pin, NO pinSpacing (avoids blank gaps).
     const st = ScrollTrigger.create({
       trigger: sectionEl,
       start: 'top top',
-      end: () => `+=${sectionEl.offsetHeight - window.innerHeight}`,
-      scrub: 0.1,
-      pin: '.sticky-viewport',
-      pinSpacing: false,
+      end: 'bottom bottom',
+      scrub: 0.5,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         const p = self.progress;

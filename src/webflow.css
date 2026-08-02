@@ -3357,6 +3357,7 @@ figcaption {
 
 .work-section {
   z-index: 2;
+  background-color: transparent;
   border-radius: 2rem;
   width: 100vw;
   height: 350vh;
@@ -3366,10 +3367,12 @@ figcaption {
 
 .sticky-viewport {
   z-index: 2;
-  background-color: transparent;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  background-color: rgba(0, 0, 0, 0.35);
   width: 100%;
   height: 100vh;
-  position: relative;
+  position: sticky;
   top: 0;
   overflow: clip;
 }

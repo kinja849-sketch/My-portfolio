@@ -71,7 +71,7 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
-        // Vortex text assembly animation
+        // Vortex text assembly animation — preserving original timing, easing, scroll-trigger
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
@@ -98,15 +98,14 @@ export default function AboutSection() {
       });
     }
 
-    // 2. Profile Image Animation: Subtle upward translation (-30px) in original horizontal alignment
+    // 2. Profile Image: Only a subtle upward translation (no horizontal movement, no scaling)
     if (profileImageRef.current && aboutSection) {
       const isMobile = window.innerWidth < 768;
 
-      gsap.set(profileImageRef.current, {
-        y: 0,
-        x: 0,
-      });
+      // Start at natural position (y: 0)
+      gsap.set(profileImageRef.current, { y: 0 });
 
+      // Subtle upward push only — synced with the same scroll trigger as vortex text
       gsap.to(profileImageRef.current, {
         y: -30,
         ease: 'power2.out',
@@ -176,28 +175,21 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        {/* Heading reads "ABOUT Me" at exact original position */}
         <div className="about-heading-wrapper">
           <h3 className="head-servisec">
             ABOUT <em className="italic-text">Me</em>
           </h3>
         </div>
 
-        <div className="container-about-heading" style={{ position: 'relative' }}>
-          {/* Profile Image: Retains original horizontal alignment, receives only subtle upward offset (-30px) on scroll */}
+        {/* Original Webflow layout: container-about-heading is absolute, fills container_about */}
+        <div className="container-about-heading">
+          {/* Profile image uses original image-4 class (absolute positioned) */}
           <img
             ref={profileImageRef}
             src="/photo_2026-05-29_01-43-44-removebg-preview.png"
             loading="lazy"
             alt="Najib Abdirahman Mohammed"
             className="image-4"
-            style={{
-              right: '2rem',
-              top: '0.5rem',
-              position: 'absolute',
-              willChange: 'transform',
-              zIndex: 10,
-            }}
           />
 
           <div className="heading-about-wrapper">

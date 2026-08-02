@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
+import CanvasBackground from './components/CanvasBackground';
 import Hero from './components/Hero';
 import AboutSection from './components/AboutSection';
 import StackSection from './components/StackSection';
@@ -44,6 +45,9 @@ export default function App() {
   return (
     <div className="page-wrapper">
       {!loadingComplete && <Preloader onComplete={() => setLoadingComplete(true)} />}
+
+      {/* Fixed canvas background — renders ALL 300 frames across full page scroll */}
+      <CanvasBackground />
 
       <Navbar onOpenContact={() => setContactOpen(true)} />
 

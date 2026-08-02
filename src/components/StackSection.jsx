@@ -19,7 +19,7 @@ export default function StackSection() {
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 769px)', () => {
-      const rotations = [-15, -7.5, 7.5, 15];
+      const rotations = [-25, -12, 12, 25];
 
       gsap.set(cards, {
         position: 'absolute',
@@ -47,7 +47,7 @@ export default function StackSection() {
           card,
           {
             x: () => {
-              const gap = baseWidth * 0.15;
+              const gap = baseWidth * 0.22;
               const step = baseWidth + gap;
               const offsets = [-step * 1.5, -step * 0.5, step * 0.5, step * 1.5];
               return offsets[index];
@@ -130,6 +130,28 @@ export default function StackSection() {
       </div>
 
       <section ref={cardsRef} id="stack" className="cards">
+        {/* Stack Section Header */}
+        <div className="stack-section-header" style={{
+          position: 'absolute',
+          top: '2rem',
+          left: '2rem',
+          right: '2rem',
+          zIndex: 12,
+          pointerEvents: 'none'
+        }}>
+          <div className="about-line-head">
+            <div className="item-name">
+              <div className="hero-text">02 / STACK</div>
+            </div>
+            <div className="line-about" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}></div>
+          </div>
+          <div className="heading-work-wrap" style={{ marginTop: '1rem' }}>
+            <h3 className="head-servisec" style={{ color: '#fff' }}>
+              TECH <em className="italic-text-3">Stack</em>
+            </h3>
+          </div>
+        </div>
+
         {/* Card 1 */}
         <div className="card card-1">
           <div className="card-wrapper">

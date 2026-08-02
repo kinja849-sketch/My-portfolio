@@ -9,15 +9,15 @@ export default function Navbar({ onOpenContact }) {
         <div className="padding-global">
           <div className="nav-mob-overlay"></div>
           <div className="nav_container">
-            <a href="#hero" className="nav_brand w-nav-brand">
+            <a href="#hero" className="nav_brand w-nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
               <img
                 src="/Silhouette For Najib Abdirahman portfolio.jpg"
                 loading="lazy"
                 alt="Najib Abdirahman Silhouette Logo"
                 className="nav_logo"
-                style={{ objectFit: 'cover', borderRadius: '4px' }}
+                style={{ width: '2.75rem', height: '2.75rem', objectFit: 'cover', borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.4)', flexShrink: 0 }}
               />
-              <div className="text-logo">
+              <div className="text-logo" style={{ lineHeight: '1.1', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.05em' }}>
                 NAJIB
                 <br />
                 ABDIRAHMAN

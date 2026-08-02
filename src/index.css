@@ -143,30 +143,30 @@ body {
   filter: invert(100%);
 }
 
-/* Hero Canvas Sequence Styles */
-.sequence-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Fixed Canvas Background — sits behind entire page, scrubs all 300 frames */
+.canvas-background-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
   background-color: #000;
 }
 
-#sequence-canvas {
+.canvas-background-fixed #sequence-canvas {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-@media (max-width: 768px) {
-  .sequence-container {
-    height: 70vh;
-  }
-  #sequence-canvas {
-    height: 100%;
-  }
+/* Legacy sequence-container hidden — canvas is now fixed */
+.sequence-container {
+  display: none;
 }
+
 
 /* Scroll Indicator */
 .scroll-indicator {
@@ -240,16 +240,6 @@ body {
   color: #0d0d0d !important;
 }
 
-/* SVG Signature */
-.scroll-signature {
-  width: 12rem;
-  height: 8rem;
-  max-width: 100%;
-  max-height: 100%;
-  display: block;
-  margin: 0 auto; 
-}
-
 /* Clock Styles */
 .svg-clock-wrapper {
   display: flex;
@@ -277,11 +267,11 @@ body {
   opacity: 1;
 }
 
-/* Cards Section Styles — needs tall height for desktop fan-out scroll animation */
+/* Cards Section Styles — optimized height to prevent plain empty scroll gap */
 .cards {
   position: relative;
   width: 100vw;
-  height: 300vh;
+  height: 200vh;
   overflow: visible;
   background-color: transparent;
 }

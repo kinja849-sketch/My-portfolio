@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function AboutSection() {
   const sectionRef = useRef(null);
   const vortexTextRef = useRef(null);
-  const signatureRef = useRef(null);
+  const profileImageRef = useRef(null);
   const ticksGroupRef = useRef(null);
   const [digitalTime, setDigitalTime] = useState('');
 
@@ -19,7 +19,6 @@ export default function AboutSection() {
     const aboutSection = sectionRef.current;
 
     if (targetText && aboutContainer && aboutSection) {
-      // Ensure layout and fonts are fully ready before splitting and calculating positions
       document.fonts.ready.then(() => {
         const text = new SplitType(targetText, { types: 'chars' });
         const chars = text.chars;
@@ -27,7 +26,6 @@ export default function AboutSection() {
 
         const totalChars = chars.length;
 
-        // SVG Logo path data used for assembling letters in 3D space
         const svgPathData =
           'M512 0L348.627 319.382H195.172l68.375-132.364h-3.071C204.072 260.235 119.911 308.437 0 319.382V188.849s76.71-4.533 121.808-51.945H0V.007h136.897v112.594l3.071-.013L195.91.007h103.535V111.89l3.071-.006L360.557 0H512z';
         const svgNS = 'http://www.w3.org/2000/svg';
@@ -99,30 +97,24 @@ export default function AboutSection() {
       });
     }
 
-    // 2. Scroll Signature Stroke Animation
-    const svgPaths = signatureRef.current?.querySelectorAll('path');
-    if (aboutSection && svgPaths && svgPaths.length > 0) {
-      gsap.set(svgPaths, {
-        strokeDasharray: (i, el) => el.getTotalLength(),
-        strokeDashoffset: (i, el) => el.getTotalLength(),
+    // 2. Profile Image Scroll Animation: Starts slightly offset, then pushes upwards right beside "Me" as fonts materialize
+    if (profileImageRef.current && aboutSection) {
+      gsap.set(profileImageRef.current, {
+        y: 45,
+        opacity: 0.85,
       });
 
-      const tl = gsap.timeline({
+      gsap.to(profileImageRef.current, {
+        y: 0,
+        opacity: 1,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: aboutSection,
           start: 'top 30%',
-          end: 'bottom 70%',
-          scrub: 0.3,
+          end: 'top 5%',
+          scrub: 0.8,
           invalidateOnRefresh: true,
         },
-      });
-
-      svgPaths.forEach((path) => {
-        tl.to(path, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          duration: 1,
-        });
       });
     }
 
@@ -182,51 +174,33 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        <div className="about-heading-wrapper">
-          <h3 className="head-servisec">
-            ABOUT <em className="italic-text">Me</em>
+        {/* Header with ABOUT Me + Profile image pushed cleanly right beside "Me" */}
+        <div className="about-heading-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem', position: 'relative' }}>
+          <h3 className="head-servisec" style={{ margin: 0, display: 'inline-flex', alignItems: 'center' }}>
+            ABOUT <em className="italic-text" style={{ marginLeft: '0.5rem' }}>Me</em>
           </h3>
-        </div>
-
-        <div className="container-about-heading">
-          {/* Main About Photo */}
           <img
+            ref={profileImageRef}
             src="/photo_2026-05-29_01-43-44-removebg-preview.png"
             loading="lazy"
             alt="Najib Abdirahman Mohammed"
-            className="image-4"
+            style={{
+              width: '7.5rem',
+              height: 'auto',
+              maxHeight: '7.5rem',
+              objectFit: 'contain',
+              borderRadius: '0.75rem',
+              display: 'inline-block',
+              verticalAlign: 'middle',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+              willChange: 'transform',
+              zIndex: 5
+            }}
           />
+        </div>
 
+        <div className="container-about-heading">
           <div className="heading-about-wrapper">
-            <div className="code-point w-embed w-script">
-              <svg
-                ref={signatureRef}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 446 526"
-                preserveAspectRatio="xMidYMid meet"
-                fill="none"
-                className="scroll-signature"
-              >
-                <path
-                  d="M428.972 55.0117C428.972 55.2241 428.117 57.6385 426.303 62.3293C424.309 67.1116 421.655 74.7695 418.914 83.2617C417.759 86.5654 417.082 87.8268 415.402 90.7299"
-                  stroke="black"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                ></path>
-                <path
-                  d="M133.917 188.813C133.701 188.813 136.765 184.732 146.417 173.971C161.527 157.126 177.094 140.365 183.481 130.708C192.221 117.492 187.527 161.93 195.136 170.588C197.03 172.744 199.914 173.282 203.464 172.591C207.014 171.9 211.61 169.445 238.891 145.62C266.173 121.796 316.001 76.6765 345.072 48.3177C374.143 19.959 380.946 9.72822 381.346 7.1812C382.353 0.765777 364.611 21.4124 350.47 46.6183C339.839 65.569 326.29 99.1843 275.785 174.997C225.28 250.809 139.277 368.351 88.9205 434.575C38.5635 500.799 26.458 512.143 19.6579 517.034C12.8578 521.925 11.73 520.019 9.84449 515.017C4.9787 502.107 4.22376 484.668 10.5483 463.411C14.2927 450.827 23.2277 435.998 35.5731 417.664C47.9186 399.331 64.4529 378.302 121.343 329.331C178.232 280.361 274.976 204.086 318.479 169.37C361.982 134.655 349.313 143.811 338.069 153.575C316.422 172.372 305.407 188.266 303.946 194.514C303.494 196.445 308.682 195.386 321.644 185.528C334.607 175.669 356.478 156.921 368.319 146.372C380.16 135.824 381.308 134.042 379.746 135.138C363.547 146.502 358.714 160.849 359.47 163.538C362.132 173.006 395.398 156.738 412.252 145.263C434.172 130.338 437.915 116.827 438.841 114.498C438.462 113.735 436.362 113.821 436.164 113.918C435.965 114.016 437.732 114.122 439.552 114.231"
-                  stroke="black"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                ></path>
-                <path
-                  d="M245.111 257.72C245.751 257.504 264.87 248.568 300.636 230.255C317.949 221.39 332.214 210.881 350.558 201.104C368.903 191.327 390.551 181.957 402.49 176.884C414.428 171.812 416.001 171.321 420.794 168.347"
-                  stroke="black"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                ></path>
-              </svg>
-            </div>
             <p ref={vortexTextRef} className="vortex-text">
               I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications using modern technologies (JavaScript, React, Node.js, Supabase) focusing on creating efficient, user-friendly, and scalable solutions. I am fluent in English, Swahili, and Somali, with conversational Arabic. My goal is to grow as a full-stack developer, delivering high-quality products while applying the same precision and efficiency I bring to financial analysis and operations.
             </p>

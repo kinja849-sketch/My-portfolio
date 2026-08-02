@@ -18,7 +18,6 @@ export default function StackSection() {
 
     const mm = gsap.matchMedia();
 
-    // Desktop: fan-out + flip, using native scroll through section height
     mm.add('(min-width: 769px)', () => {
       const rotations = [-15, -7.5, 7.5, 15];
 
@@ -42,7 +41,6 @@ export default function StackSection() {
         },
       });
 
-      // Fan out cards from stacked center
       cards.forEach((card, index) => {
         const baseWidth = card.offsetWidth || 288;
         tl.to(
@@ -62,7 +60,6 @@ export default function StackSection() {
         );
       });
 
-      // 3D Flip each card in sequence
       cards.forEach((card, index) => {
         const frontEl = card.querySelector('.flip-card-front');
         const backEl = card.querySelector('.flip-card-back');
@@ -77,7 +74,6 @@ export default function StackSection() {
       });
     });
 
-    // Mobile: vertical stack flip
     mm.add('(max-width: 768px)', () => {
       gsap.set(cards, {
         position: 'relative',
@@ -143,7 +139,7 @@ export default function StackSection() {
                   <div className="number-card">01</div>
                 </div>
                 <div className="name-cadr-center">
-                  <div className="text-name-card">T</div>
+                  <div className="text-name-card">F</div>
                 </div>
                 <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
@@ -152,14 +148,14 @@ export default function StackSection() {
               </div>
               <div className="flip-card-back">
                 <div className="head-card">
-                  <h4 className="h4">LAYOUT</h4>
-                  <div className="card-h">L</div>
+                  <h4 className="h4">FRONTEND</h4>
+                  <div className="card-h">F</div>
                 </div>
-                <div className="discribe-cards"><div className="discribe-text">Figma to Webflow</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Client-First Architecture</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Fluid Responsive Design</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Clean Class Structure</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Cross-Device Grid Scaling</div></div>
+                <div className="discribe-cards"><div className="discribe-text">JavaScript (ES6+)</div></div>
+                <div className="discribe-cards"><div className="discribe-text">TypeScript</div></div>
+                <div className="discribe-cards"><div className="discribe-text">ReactJS Development</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Tailwind CSS</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Modern Responsive UI</div></div>
               </div>
             </div>
           </div>
@@ -174,7 +170,7 @@ export default function StackSection() {
                   <div className="number-card">02</div>
                 </div>
                 <div className="name-cadr-center">
-                  <div className="text-name-card">E</div>
+                  <div className="text-name-card">B</div>
                 </div>
                 <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
@@ -183,14 +179,14 @@ export default function StackSection() {
               </div>
               <div className="flip-card-back">
                 <div className="head-card">
-                  <h4 className="h4">MOTION</h4>
-                  <div className="card-h">M</div>
+                  <h4 className="h4">BACKEND</h4>
+                  <div className="card-h">B</div>
                 </div>
-                <div className="discribe-cards"><div className="discribe-text">Advanced Custom Code</div></div>
-                <div className="discribe-cards"><div className="discribe-text">GSAP &amp; ScrollTrigger Core</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Cinematic Timeline Engineering</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Interactive Component Behavior</div></div>
-                <div className="discribe-cards"><div className="discribe-text">High-End Micro-Interactions</div></div>
+                <div className="discribe-cards"><div className="discribe-text">NodeJS &amp; Express</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Supabase Infrastructure</div></div>
+                <div className="discribe-cards"><div className="discribe-text">REST APIs &amp; Webhooks</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Authentication &amp; Security</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Database &amp; Real-time Data</div></div>
               </div>
             </div>
           </div>
@@ -205,7 +201,7 @@ export default function StackSection() {
                   <div className="number-card">03</div>
                 </div>
                 <div className="name-cadr-center">
-                  <div className="text-name-card">C</div>
+                  <div className="text-name-card">S</div>
                 </div>
                 <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
@@ -214,14 +210,14 @@ export default function StackSection() {
               </div>
               <div className="flip-card-back">
                 <div className="head-card">
-                  <h4 className="h4">3D &amp; WEBGL</h4>
-                  <div className="card-h">D</div>
+                  <h4 className="h4">STRENGTHS</h4>
+                  <div className="card-h">S</div>
                 </div>
-                <div className="discribe-cards"><div className="discribe-text">Three.js Scene Integration</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Interactive WebGl Components</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Canvas API Image Sequences</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Heavy Asset Frame Optimization</div></div>
-                <div className="discribe-cards"><div className="discribe-text">3D Spline Integration</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Responsive React UIs</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Type-Safe Development</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Full-Stack Integration</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Analytical Problem Solving</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Clean &amp; Maintainable Code</div></div>
               </div>
             </div>
           </div>
@@ -236,7 +232,7 @@ export default function StackSection() {
                   <div className="number-card">04</div>
                 </div>
                 <div className="name-cadr-center">
-                  <div className="text-name-card">H</div>
+                  <div className="text-name-card">E</div>
                 </div>
                 <img src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a46258af38bfb12c92f977c_3258584.webp" loading="lazy" alt="card bg" />
                 <div className="card-backdown">
@@ -245,14 +241,14 @@ export default function StackSection() {
               </div>
               <div className="flip-card-back">
                 <div className="head-card">
-                  <h4 className="h4">AUTOMATION</h4>
-                  <div className="card-h">A</div>
+                  <h4 className="h4">HONORS</h4>
+                  <div className="card-h">H</div>
                 </div>
-                <div className="discribe-cards"><div className="discribe-text">Make &amp; Airtable Infrastructures</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Automation n8n Workflow</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Seamless API &amp; Webhooks</div></div>
-                <div className="discribe-cards"><div className="discribe-text">CRM Data Synchronization</div></div>
-                <div className="discribe-cards"><div className="discribe-text">Production-Ready Hand-off</div></div>
+                <div className="discribe-cards"><div className="discribe-text">B. Finance &amp; Accounting (MUP)</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Debate Club Leader</div></div>
+                <div className="discribe-cards"><div className="discribe-text">2-Time Spelling Bee Champ</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Archery Competitor</div></div>
+                <div className="discribe-cards"><div className="discribe-text">Process Optimization</div></div>
               </div>
             </div>
           </div>

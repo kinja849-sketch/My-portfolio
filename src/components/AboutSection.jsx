@@ -41,7 +41,6 @@ export default function AboutSection() {
         const containerCenterX = (containerRect.left + containerRect.width / 2) - textRect.left;
         const containerCenterY = (containerRect.top + containerRect.height / 2) - textRect.top;
 
-        // Cache layout properties first to prevent layout thrashing inside loop
         const charsData = chars.map(char => ({
           offsetLeft: char.offsetLeft,
           offsetTop: char.offsetTop,
@@ -67,7 +66,7 @@ export default function AboutSection() {
       gsap.set(targetText, { perspective: 1200 });
       calculatePositions();
 
-      const vortexTrigger = gsap.to(chars, {
+      gsap.to(chars, {
         scrollTrigger: {
           trigger: aboutSection,
           start: 'top 20%',
@@ -183,12 +182,11 @@ export default function AboutSection() {
 
         <div className="container-about-heading">
           <img
-            src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a3648623f652344aa76edd5_IMG_4076.PNG"
+            src="/photo_2026-05-29_01-43-44-removebg-preview.png"
             loading="lazy"
-            sizes="(max-width: 991px) 100vw, 992px"
-            alt="icon"
-            srcSet="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a3648623f652344aa76edd5_IMG_4076-p-500.png 500w, https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a3648623f652344aa76edd5_IMG_4076-p-800.png 800w, https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a3648623f652344aa76edd5_IMG_4076.PNG 992w"
+            alt="Najib Abdirahman Mohammed"
             className="image-4"
+            style={{ objectFit: 'contain', maxHeight: '420px' }}
           />
 
           <div className="heading-about-wrapper">
@@ -207,7 +205,7 @@ export default function AboutSection() {
               </svg>
             </div>
             <p ref={vortexTextRef} className="vortex-text">
-              I believe that digital interfaces are a form of art. My goal is to harmonize technical precision with visual emotion, using code as a medium to create immersive, breathing experiences. For me, development is not just about functionality—it is the pursuit of aesthetic perfection.
+              I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications focusing on clean code, performance, and user-friendly scalable solutions.
             </p>
           </div>
         </div>
@@ -225,10 +223,10 @@ export default function AboutSection() {
 
         <div className="about-bg-text">
           <div className="bg-text-about">
-            Fundam<br />entals<br /><br />
+            Finan<br />cial &amp;<br />Tech<br /><br />
           </div>
           <div className="bg-text-about right">
-            <br />of Web<br />Develop<br />ment<br /><br />
+            <br />Full Stack<br />Develop<br />ment<br /><br />
           </div>
         </div>
 

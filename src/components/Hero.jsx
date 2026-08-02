@@ -12,12 +12,11 @@ export default function Hero() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d', { alpha: false });
-    const totalFrames = 91;
+    const totalFrames = 103;
     const introStartFrame = 1;
     const frameObj = { frame: introStartFrame };
     const images = new Array(totalFrames);
 
-    // Set canvas dimensions matching the frame aspect ratio (~16:9)
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
       canvas.width = 960;
@@ -65,22 +64,17 @@ export default function Hero() {
       }
     }
 
-    // Preload ALL frames upfront since they are local (fast)
-    let loadedCount = 0;
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       img.src = getImgSrc(i);
       images[i - 1] = img;
       img.onload = () => {
-        loadedCount++;
-        // Draw the first frame as soon as it loads
         if (i === 1) {
           requestAnimationFrame(() => draw(img));
         }
       };
     }
 
-    // GSAP ScrollTrigger Sequence — scrubs through the 600vh hero section
     const trigger = gsap.to(frameObj, {
       frame: totalFrames,
       ease: 'none',
@@ -95,7 +89,6 @@ export default function Hero() {
       },
     });
 
-    // Scroll indicator fade-out
     gsap.to('#scroll-indicator', {
       opacity: 0,
       duration: 0.3,
@@ -126,23 +119,23 @@ export default function Hero() {
             <div className="hero-headig-left">
               <div className="heading-item">
                 <div className="name-heading-wrapper">
-                  <div className="item-name">
-                    <div className="hero-text">NAJIB ABDIRHMAN</div>
+                  <div className="item-name" style={{ width: 'auto', padding: '0 0.8rem' }}>
+                    <div className="hero-text">NAJIB ABDIRAHMAN MOHAMMED</div>
                   </div>
                   <div className="item-name-work">
                     <div className="point-name"></div>
                     <div className="hero-text is-black">Available for Work</div>
                   </div>
                 </div>
-                <h1 className="h1">Creative Front-end Developer &amp; Webflow Specialist</h1>
+                <h1 className="h1">Full-Stack Developer</h1>
                 <p id="scramble-2" className="discribe-hero">
-                  Engineering high-end interactive websites where advanced motion meets clean, performant architecture. Powered by creative coding and intelligent AI-driven workflows.
+                  Building modern, scalable web applications with clean architecture, strong attention to detail, and a focus on performance and user experience. Combining analytical thinking from a finance background with hands-on development in JavaScript, React, Node.js, and modern tooling.
                   <br />
                 </p>
                 <a href="#work" className="link-hero w-inline-block">
                   <div className="btn-contact">
                     <div className="btn-tete-wrap">
-                      <div className="text-btn">View Project</div>
+                      <div className="text-btn">View Projects</div>
                       <img
                         src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
                         loading="lazy"
@@ -159,16 +152,16 @@ export default function Hero() {
                   <div className="hero-text">MY FOCUS</div>
                 </div>
                 <h2 className="h2">
-                  I help digital agencies and forward-thinking brands scale by pushing Webflow to its absolute limits.
+                  I help startups and growing teams ship reliable web products by combining solid engineering practices with practical problem-solving.
                 </h2>
                 <p className="hero-discribe">
-                  By merging advanced creative coding (GSAP, Three.js) with intelligent workflow automations (n8n, Make), I deliver clean, production-ready web ecosystems that load instantly and perform flawlessly.
+                  I care about clean code, maintainable systems, and delivering real results. Combining analytical rigor with modern full-stack development.
                   <br />
                 </p>
                 <a href="#footernav" className="link-hero w-inline-block">
                   <div className="btn-contact">
                     <div className="btn-tete-wrap">
-                      <div className="text-btn">My Contact</div>
+                      <div className="text-btn">Get in Touch</div>
                       <img
                         src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
                         loading="lazy"
@@ -185,33 +178,33 @@ export default function Hero() {
 
             <div className="hero-headig-right">
               <div className="hero-discribe-wrap">
-                <div className="text-hero">Core Stack</div>
+                <div className="text-hero">Frontend</div>
                 <div className="discribe-item">
-                  <div className="tetxt-stack">Advanced Webflow</div>
-                  <div className="tetxt-stack is-2">Finsweet Attributes</div>
-                  <div className="tetxt-stack is-3">Custom JavaScript(E63+)</div>
+                  <div className="tetxt-stack">JavaScript (ES6+)</div>
+                  <div className="tetxt-stack is-2">TypeScript</div>
+                  <div className="tetxt-stack is-3">ReactJS &amp; Tailwind CSS</div>
                 </div>
               </div>
               <div className="hero-discribe-wrap">
-                <div className="text-hero">Creative Coding</div>
+                <div className="text-hero">Backend</div>
                 <div className="discribe-item">
-                  <div className="tetxt-stack is-4">GSAP</div>
-                  <div className="tetxt-stack is-5">Canvas API &amp; 3D Spline</div>
-                  <div className="tetxt-stack is-6">Three.js/WebGL</div>
+                  <div className="tetxt-stack is-4">NodeJS</div>
+                  <div className="tetxt-stack is-5">Supabase &amp; APIs</div>
+                  <div className="tetxt-stack is-6">REST &amp; Webhooks</div>
                 </div>
               </div>
               <div className="hero-discribe-wrap">
-                <div className="text-hero">Automations</div>
+                <div className="text-hero">Education</div>
                 <div className="discribe-item">
-                  <div className="tetxt-stack is-8">Workflow Automation (n8n/Make/Zapier)</div>
-                  <div className="tetxt-stack is-9">API &amp; Webhooks Integration</div>
+                  <div className="tetxt-stack is-8">B. Finance &amp; Accounting</div>
+                  <div className="tetxt-stack is-9">Muhammadiyah Univ. Indonesia</div>
                 </div>
               </div>
               <div className="hero-discribe-wrap">
-                <div className="text-hero">AI-Driven Dev</div>
+                <div className="text-hero">Languages</div>
                 <div className="discribe-item">
-                  <div className="tetxt-stack">Ai Programming (Claude &amp; Gemini)</div>
-                  <div className="tetxt-stack">Prompt Engineering for Custom Code</div>
+                  <div className="tetxt-stack">English &amp; Swahili (Native)</div>
+                  <div className="tetxt-stack">Somali (Native) · Arabic</div>
                 </div>
               </div>
             </div>

@@ -35,7 +35,11 @@ export default function FooterContact({ onOpenContact }) {
             </div>
           </a>
 
-          <div className="item-name-footer">
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', maxWidth: '30rem', margin: '1.5rem auto 0', textAlign: 'center', lineHeight: '1.6' }}>
+            Open to opportunities in full-stack development, React/Node projects, and collaborative remote or on-site work.
+          </p>
+
+          <div className="item-name-footer" style={{ marginTop: '2rem' }}>
             <div className="point-name"></div>
             <div className="hero-text is-black">
               FNSH
@@ -52,21 +56,18 @@ export default function FooterContact({ onOpenContact }) {
         <div className="footer-down-wrapper">
           <div className="item-footer-down">
             <div className="item-footer-wrap">
-              <a href="mailto:naliv9988@gmail.com" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
-                <div>EMAIL</div>
+              <a href="mailto:najibabdirahman074@gmail.com" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
+                <div>EMAIL: najibabdirahman074@gmail.com</div>
               </a>
-              <a href="https://web.telegram.org/naliiiv" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
-                <div>TELEGRAM</div>
-              </a>
-              <a href="https://www.linkedin.com/in/andrey-nalivaiko-6258363a9" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
-                <div>LINKEDIN</div>
+              <a href="tel:+6282226369835" target="_blank" rel="noreferrer" className="link-footer-wrap w-inline-block">
+                <div>PHONE: +62 82226369835</div>
               </a>
             </div>
 
             <div className="footer-wrap-down">
               <div className="item-down-left">
                 <div className="text-block-9">
-                  2026 © Edition Najib Abdirhman . Crafted with code &amp; intent.
+                  2026 © Edition Najib Abdirahman Mohammed . Crafted with code &amp; intent.
                 </div>
               </div>
             </div>

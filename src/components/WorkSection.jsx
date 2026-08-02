@@ -6,49 +6,31 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PROJECTS = [
   {
-    name: 'FEADSHIP',
-    category: 'B2B / Marketplace',
-    tagline: 'An immersive digital experience bridging high-end engineering with cinematic storytelling. Engineered to transcend native limitations and deliver a seamless journey.',
-    stack: ['JavaScript', 'WebGL', 'Three.js', 'GSAP'],
+    name: 'VICALARY',
+    category: 'Web Application',
+    tagline: 'Building modern, scalable web applications with clean architecture, strong attention to detail, and a focus on performance and user experience.',
+    stack: ['JavaScript', 'React', 'NodeJS', 'Tailwind'],
     video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1782724727/feadship_optimized_cfeclk.webm',
     mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb93af0165d490d94894_feadship.webp',
-    link: 'https://feadship.webflow.io/'
+    link: 'https://www.vicalary.com'
   },
   {
-    name: 'SPECTACULAR',
-    category: 'Paramedical Platform',
-    tagline: 'A typography-focused platform where architectural precision meets fluid, performance-driven motion.',
-    stack: ['Figma to Webflow', 'GSAP', 'Client-first'],
+    name: 'YANHAL',
+    category: 'Web Platform',
+    tagline: 'Interactive, responsive web platform designed with modern UI standards and efficient frontend state management.',
+    stack: ['React', 'TypeScript', 'NodeJS', 'Tailwind'],
     video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781261282/studio_yumf1v.webm',
     mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb9dd61285375257c08b_studio.webp',
-    link: 'https://spectaculars.webflow.io/'
+    link: 'https://yanhal.netlify.app/'
   },
   {
-    name: 'SOREN-ROSE',
-    category: 'Portfolio Studio',
-    tagline: 'A study in minimalist elegance. Crafted to transform static content into a fluid, high-performance scroll experience.',
-    stack: ['GSAP', 'JavaScript', 'Three.js'],
+    name: 'YADA LEARN',
+    category: 'EdTech Platform',
+    tagline: 'E-learning web application focused on interactive content delivery, real-time database features, and user engagement.',
+    stack: ['React', 'Supabase', 'TypeScript', 'NodeJS'],
     video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781261274/rosestudio_fibvjw.webm',
     mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beba279763ce104996b47_rose.webp',
-    link: 'https://soren-rosestudio.webflow.io/'
-  },
-  {
-    name: 'PHOTONIX',
-    category: 'Automation Hub',
-    tagline: 'Seamless industrial storytelling through frame-perfect canvas rendering. Bridging high-performance data with adaptive, interactive visuals.',
-    stack: ['Three.js', 'GitHub', 'GSAP', 'API'],
-    video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781261272/pxonix_srtiaq.webm',
-    mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb98b7d387841011fd2a_pxonix.webp',
-    link: 'https://photoni-x.webflow.io/'
-  },
-  {
-    name: 'NEURA-AI',
-    category: '3D Animation',
-    tagline: 'An immersive gateway into the future of intelligence. Where complex 3D transformations meet intuitive, high-speed agency interactions.',
-    stack: ['3D Spline', 'GSAP', 'JavaScript'],
-    video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781264863/ne_h6aifs.webm',
-    mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beba7351254574b0b38bd_neuralistica.webp',
-    link: 'https://neuralistica.webflow.io/'
+    link: 'https://yadalearnapp.netlify.app/'
   }
 ];
 
@@ -73,9 +55,7 @@ export default function WorkSection() {
       { rx: 90, ry: 0 },
       { rx: 0, ry: 0 },
       { rx: 0, ry: -90 },
-      { rx: 0, ry: -180 },
-      { rx: 0, ry: -270 },
-      { rx: 0, ry: -360 }
+      { rx: 0, ry: -180 }
     ];
 
     function getCubeTransform(progress) {
@@ -112,8 +92,6 @@ export default function WorkSection() {
 
     let lastSceneIndex = -1;
 
-    // Use the NATIVE 600vh height from webflow.css + sticky-viewport for pinning.
-    // ScrollTrigger only tracks progress — NO pin, NO pinSpacing (avoids blank gaps).
     const st = ScrollTrigger.create({
       trigger: sectionEl,
       start: 'top top',
@@ -334,10 +312,10 @@ export default function WorkSection() {
               <video src={PROJECTS[2].video} autoPlay muted loop playsInline></video>
             </div>
             <div className="cube-face f-left" style={{ position: 'absolute', inset: 0, transform: 'rotateY(-90deg) translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <video src={PROJECTS[3].video} autoPlay muted loop playsInline></video>
+              <video src={PROJECTS[0].video} autoPlay muted loop playsInline></video>
             </div>
             <div className="cube-face f-bottom" style={{ position: 'absolute', left: 0, right: 0, top: 'calc(50% - min(72vw, 550px)/2)', width: '100%', height: 'min(72vw, 550px)', transform: 'rotateX(90deg) translateZ(calc(calc(min(72vw, 550px) * 9 / 16) / 2))' }}>
-              <video src={PROJECTS[4].video} autoPlay muted loop playsInline></video>
+              <video src={PROJECTS[1].video} autoPlay muted loop playsInline></video>
             </div>
           </div>
 

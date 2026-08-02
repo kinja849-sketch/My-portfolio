@@ -19,7 +19,7 @@ export default function Navbar({ onOpenContact }) {
               <div className="text-logo">
                 NAJIB
                 <br />
-                ABDIRHMAN
+                ABDIRAHMAN
               </div>
             </a>
 
@@ -79,12 +79,14 @@ export default function Navbar({ onOpenContact }) {
             </div>
 
             <a
-              href="https://webflow.com/@nlstudio"
-              target="_blank"
-              rel="noreferrer"
+              href="#footernav"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenContact) onOpenContact();
+              }}
               className="link-sub w-inline-block"
             >
-              <div className="text-btn">Subscribe</div>
+              <div className="text-btn">Get in touch</div>
               <img
                 src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a3518a536fe5f17506a2315_SVG%20(3).svg"
                 loading="lazy"

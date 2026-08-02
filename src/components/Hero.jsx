@@ -1,8 +1,78 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
+  const sectionRef = useRef(null);
+  const rightColumnRef = useRef(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const rightCol = rightColumnRef.current;
+    if (!section || !rightCol) return;
+
+    const stackGroups = rightCol.querySelectorAll('.hero-discribe-wrap');
+    if (!stackGroups.length) return;
+
+    // Set initial state: all stack groups hidden, shifted down
+    gsap.set(stackGroups, { opacity: 0, y: 40 });
+
+    // Each stack group reveals progressively at different scroll positions within the hero
+    stackGroups.forEach((group, i) => {
+      const startPct = 15 + i * 18; // 15%, 33%, 51%, 69%
+      const endPct = startPct + 15;
+
+      gsap.to(group, {
+        opacity: 1,
+        y: 0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section,
+          start: `${startPct}% top`,
+          end: `${endPct}% top`,
+          scrub: 0.6,
+        },
+      });
+
+      // Fade out near the end of the hero section
+      gsap.to(group, {
+        opacity: 0,
+        y: -20,
+        ease: 'power1.in',
+        scrollTrigger: {
+          trigger: section,
+          start: '85% top',
+          end: '95% top',
+          scrub: 0.4,
+        },
+      });
+    });
+
+    // Fade out scroll indicator on initial scroll
+    gsap.to('#scroll-indicator', {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: '5% top',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === section || st.vars?.trigger === section) {
+          // Leave cleanup to GSAP's internal handling
+        }
+      });
+    };
+  }, []);
+
   return (
-    <section id="hero" className="section_hero">
+    <section ref={sectionRef} id="hero" className="section_hero">
       <div id="sticky-wrapper" className="container-hero">
         <div className="hero-wrapper-content">
           <div className="hero-heading-container">
@@ -66,7 +136,7 @@ export default function Hero() {
 
             <div className="hero-headig-center"></div>
 
-            <div className="hero-headig-right">
+            <div ref={rightColumnRef} className="hero-headig-right">
               <div className="hero-discribe-wrap">
                 <div className="text-hero">Frontend</div>
                 <div className="discribe-item">
@@ -110,7 +180,7 @@ export default function Hero() {
                 <path id="circlePath" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"></path>
               </defs>
               <text fill="white" fontFamily="Arial, sans-serif" fontSize="9" letterSpacing="3.5" fontWeight="bold">
-                <textPath href="#circlePath">SCROLL DOWN • SCROLL DOWN •</textPath>
+                <textPath href="##circlePath">SCROLL DOWN • SCROLL DOWN •</textPath>
               </text>
             </svg>
             <svg className="mouse-icon" width="20" height="34" viewBox="0 0 24 40" fill="none">

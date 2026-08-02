@@ -13,7 +13,6 @@ export default function AboutSection() {
   const [digitalTime, setDigitalTime] = useState('');
 
   useEffect(() => {
-    // 1. Vortex Text Split & GSAP 3D SVG Path Assembly Animation
     const targetText = vortexTextRef.current;
     const aboutContainer = document.querySelector('.container_about');
     const aboutSection = sectionRef.current;
@@ -71,7 +70,7 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
-        // Vortex text assembly animation — preserving original timing, easing, scroll-trigger
+        // Vortex text assembly — original timing, easing, scroll-trigger preserved exactly
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
@@ -98,28 +97,28 @@ export default function AboutSection() {
       });
     }
 
-    // 2. Profile Image: Only a subtle upward translation (no horizontal movement, no scaling)
+    // Profile image: stays perfectly centered during text assembly phase.
+    // Only receives a subtle upward push AFTER the paragraph content begins appearing.
+    // No horizontal movement. No scaling. No distortion.
     if (profileImageRef.current && aboutSection) {
-      const isMobile = window.innerWidth < 768;
-
-      // Start at natural position (y: 0)
       gsap.set(profileImageRef.current, { y: 0 });
 
-      // Subtle upward push only — synced with the same scroll trigger as vortex text
       gsap.to(profileImageRef.current, {
         y: -30,
         ease: 'power2.out',
         scrollTrigger: {
           trigger: aboutSection,
-          start: 'top 20%',
-          end: 'bottom 120%',
-          scrub: isMobile ? 0.8 : 1.2,
+          // Starts later than the text assembly (which starts at top 20%)
+          // so image only moves AFTER text has substantially formed
+          start: '40% top',
+          end: '70% top',
+          scrub: 1,
           invalidateOnRefresh: true,
         },
       });
     }
 
-    // 3. Tick Clock Logic
+    // Tick Clock Logic
     const ticksGroup = ticksGroupRef.current;
     if (ticksGroup) {
       ticksGroup.innerHTML = '';
@@ -181,9 +180,9 @@ export default function AboutSection() {
           </h3>
         </div>
 
-        {/* Original Webflow layout: container-about-heading is absolute, fills container_about */}
         <div className="container-about-heading">
-          {/* Profile image uses original image-4 class (absolute positioned) */}
+          {/* Profile image: uses original image-4 class, centered in container-about-heading.
+              Stays centered during letter assembly. Only subtle upward push after text forms. */}
           <img
             ref={profileImageRef}
             src="/photo_2026-05-29_01-43-44-removebg-preview.png"

@@ -3234,7 +3234,7 @@ figcaption {
   z-index: 2;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: #fff;
   border-radius: 2rem;
   grid-template-rows: auto 100vh auto;
   grid-template-columns: 1fr;

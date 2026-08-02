@@ -5,11 +5,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CanvasBackground() {
+  const containerRef = useRef(null);
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
     const ctx = canvas.getContext('2d');
     const totalFrames = 300;
@@ -53,23 +55,10 @@ export default function CanvasBackground() {
       if (clamped === lastDrawnFrame) return;
       lastDrawnFrame = clamped;
 
-      let img = images[clamped - 1];
-
-      if (!img) {
-        img = new Image();
-        img.src = getImgSrc(clamped);
-        images[clamped - 1] = img;
-        img.onload = () => {
-          if (Math.round(frameObj.frame) === clamped) {
-            requestAnimationFrame(() => draw(img));
-          }
-        };
-        return;
-      }
-
-      if (img.complete && img.naturalWidth !== 0) {
+      const img = images[clamped - 1];
+      if (img && img.complete && img.naturalWidth !== 0) {
         requestAnimationFrame(() => draw(img));
-      } else {
+      } else if (img) {
         img.onload = () => {
           if (Math.round(frameObj.frame) === clamped) {
             requestAnimationFrame(() => draw(img));
@@ -78,7 +67,7 @@ export default function CanvasBackground() {
       }
     }
 
-    // Preload all 300 frames immediately in parallel
+    // Preload all 300 frames
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       img.src = getImgSrc(i);
@@ -88,12 +77,15 @@ export default function CanvasBackground() {
       }
     }
 
-    // ScrollTrigger: scrubs smoothly through all 300 frames from top to bottom of page
-    const trigger = gsap.to(frameObj, {
+    // Frame sequence scrubs ONLY within the hero section
+    const heroSection = document.querySelector('.section_hero');
+    if (!heroSection) return;
+
+    const frameTrigger = gsap.to(frameObj, {
       frame: totalFrames,
       ease: 'none',
       scrollTrigger: {
-        trigger: document.documentElement,
+        trigger: heroSection,
         start: 'top top',
         end: 'bottom bottom',
         scrub: isMobile ? 0.4 : 0.2,
@@ -104,25 +96,32 @@ export default function CanvasBackground() {
       },
     });
 
-    // Refresh ScrollTrigger after DOM is fully loaded & when window resizes
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
+    // Fade out the entire canvas container as user leaves the hero section
+    gsap.to(container, {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroSection,
+        start: '90% top',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
 
+    const handleRefresh = () => ScrollTrigger.refresh();
     window.addEventListener('resize', handleRefresh);
     window.addEventListener('load', handleRefresh);
     setTimeout(handleRefresh, 500);
-    setTimeout(handleRefresh, 1500);
 
     return () => {
       window.removeEventListener('resize', handleRefresh);
       window.removeEventListener('load', handleRefresh);
-      if (trigger.scrollTrigger) trigger.scrollTrigger.kill();
+      if (frameTrigger.scrollTrigger) frameTrigger.scrollTrigger.kill();
     };
   }, []);
 
   return (
-    <div className="canvas-background-fixed">
+    <div ref={containerRef} className="canvas-background-fixed">
       <canvas ref={canvasRef} id="sequence-canvas"></canvas>
     </div>
   );

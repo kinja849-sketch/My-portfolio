@@ -3366,9 +3366,7 @@ figcaption {
 
 .sticky-viewport {
   z-index: 2;
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  background-color: #f3f3f363;
+  background-color: transparent;
   width: 100%;
   height: 100vh;
   position: relative;

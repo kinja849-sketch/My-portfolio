@@ -71,6 +71,7 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
+        // Vortex text assembly animation
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
@@ -97,22 +98,30 @@ export default function AboutSection() {
       });
     }
 
-    // 2. Profile Image Scroll Animation: Starts slightly offset, then pushes upwards right beside "Me" as fonts materialize
+    // 2. Profile Image Animation: Initial centered position -> pushes UPWARDS & towards LEFT side on scroll as fonts take shape
     if (profileImageRef.current && aboutSection) {
+      const isMobile = window.innerWidth < 768;
+
       gsap.set(profileImageRef.current, {
-        y: 45,
-        opacity: 0.85,
+        left: '50%',
+        top: '50%',
+        xPercent: -50,
+        yPercent: -50,
+        opacity: 0.9,
       });
 
       gsap.to(profileImageRef.current, {
-        y: 0,
+        left: isMobile ? '5%' : '10%',
+        top: '-15%',
+        xPercent: 0,
+        yPercent: 0,
         opacity: 1,
-        ease: 'power2.out',
+        ease: 'power2.inOut',
         scrollTrigger: {
           trigger: aboutSection,
-          start: 'top 30%',
-          end: 'top 5%',
-          scrub: 0.8,
+          start: 'top 20%',
+          end: 'bottom 120%',
+          scrub: isMobile ? 0.8 : 1.2,
           invalidateOnRefresh: true,
         },
       });
@@ -174,32 +183,34 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        {/* Header with ABOUT Me + Profile image pushed cleanly right beside "Me" */}
-        <div className="about-heading-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem', position: 'relative' }}>
-          <h3 className="head-servisec" style={{ margin: 0, display: 'inline-flex', alignItems: 'center' }}>
-            ABOUT <em className="italic-text" style={{ marginLeft: '0.5rem' }}>Me</em>
+        {/* Centered ABOUT Me header - Me retains its position */}
+        <div className="about-heading-wrapper" style={{ textAlign: 'center', position: 'relative' }}>
+          <h3 className="head-servisec">
+            ABOUT <em className="italic-text">Me</em>
           </h3>
+        </div>
+
+        <div className="container-about-heading" style={{ position: 'relative' }}>
+          {/* Profile Image: Initially centered, then pushes UPWARDS and towards LEFT side on scroll without distortion */}
           <img
             ref={profileImageRef}
             src="/photo_2026-05-29_01-43-44-removebg-preview.png"
             loading="lazy"
             alt="Najib Abdirahman Mohammed"
             style={{
-              width: '7.5rem',
+              width: '8.5rem',
               height: 'auto',
-              maxHeight: '7.5rem',
+              maxHeight: '9rem',
               objectFit: 'contain',
               borderRadius: '0.75rem',
-              display: 'inline-block',
-              verticalAlign: 'middle',
+              position: 'absolute',
               boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-              willChange: 'transform',
-              zIndex: 5
+              willChange: 'transform, left, top',
+              zIndex: 10,
+              pointerEvents: 'none'
             }}
           />
-        </div>
 
-        <div className="container-about-heading">
           <div className="heading-about-wrapper">
             <p ref={vortexTextRef} className="vortex-text">
               I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications using modern technologies (JavaScript, React, Node.js, Supabase) focusing on creating efficient, user-friendly, and scalable solutions. I am fluent in English, Swahili, and Somali, with conversational Arabic. My goal is to grow as a full-stack developer, delivering high-quality products while applying the same precision and efficiency I bring to financial analysis and operations.

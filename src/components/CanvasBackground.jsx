@@ -89,15 +89,12 @@ export default function CanvasBackground() {
       }
     }
 
-    // Frame sequence trigger target on .section_hero
-    const heroSection = document.getElementById('hero') || document.querySelector('.section_hero');
-    if (!heroSection) return;
-
+    // Scrub 300 frame sequence across the entire document (Hero, Stack, Work, Contact)
     const frameTrigger = gsap.to(frameObj, {
       frame: totalFrames,
       ease: 'none',
       scrollTrigger: {
-        trigger: heroSection,
+        trigger: document.documentElement,
         start: 'top top',
         end: 'bottom bottom',
         scrub: isMobile ? 0.3 : 0.15,
@@ -108,19 +105,32 @@ export default function CanvasBackground() {
       },
     });
 
-    // Fade out canvas container as user leaves hero section
-    gsap.to(container, {
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: heroSection,
-        start: '90% top',
-        end: 'bottom top',
-        scrub: true,
-      },
-    });
+    // Hide canvas ONLY when inside the About Me section (.section_about)
+    const aboutSection = document.querySelector('.section_about');
+    if (aboutSection) {
+      gsap.to(container, {
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: aboutSection,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: true,
+        },
+      });
 
-    // Robust Refresh for Netlify production deployment
+      gsap.to(container, {
+        opacity: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: aboutSection,
+          start: 'bottom 80%',
+          end: 'bottom 20%',
+          scrub: true,
+        },
+      });
+    }
+
     const handleRefresh = () => {
       ScrollTrigger.refresh();
     };

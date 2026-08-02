@@ -12,15 +12,16 @@ export default function Hero() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d', { alpha: false });
-    const totalFrames = 480;
-    const introStartFrame = 25;
+    const totalFrames = 91;
+    const introStartFrame = 1;
     const frameObj = { frame: introStartFrame };
     const images = new Array(totalFrames);
 
+    // Set canvas dimensions matching the frame aspect ratio (~16:9)
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
-      canvas.width = 1080;
-      canvas.height = 1350;
+      canvas.width = 960;
+      canvas.height = 540;
     } else {
       canvas.width = 1920;
       canvas.height = 1080;
@@ -28,7 +29,7 @@ export default function Hero() {
 
     function getImgSrc(index) {
       const frameNum = String(index).padStart(3, '0');
-      return `https://cdn.jsdelivr.net/gh/naliv8899-wq/portfoliowebp@main/frame_${frameNum}.webp`;
+      return `/frames/ezgif-frame-${frameNum}.jpg`;
     }
 
     function draw(img) {
@@ -53,58 +54,33 @@ export default function Hero() {
 
     let lastDrawnFrame = -1;
     function renderFrame(index) {
-      if (index === lastDrawnFrame) return;
-      lastDrawnFrame = index;
+      const clamped = Math.max(1, Math.min(totalFrames, index));
+      if (clamped === lastDrawnFrame) return;
+      lastDrawnFrame = clamped;
 
-      const imgIndex = index - 1;
-      let img = images[imgIndex];
-      if (!img) {
-        img = new Image();
-        img.src = getImgSrc(index);
-        images[imgIndex] = img;
-        img.onload = () => {
-          if (Math.round(frameObj.frame) === index) {
-            requestAnimationFrame(() => draw(img));
-          }
-        };
-        return;
-      }
-
-      if (img.complete && img.naturalWidth !== 0) {
+      const imgIndex = clamped - 1;
+      const img = images[imgIndex];
+      if (img && img.complete && img.naturalWidth !== 0) {
         requestAnimationFrame(() => draw(img));
       }
     }
 
-    // Smart background preloader for smooth scrubbing
-    function preloadRemainingImages() {
-      const step = isMobile ? 2 : 1;
-      for (let i = introStartFrame + 1; i <= totalFrames; i += step) {
-        if (!images[i - 1]) {
-          const img = new Image();
-          img.src = getImgSrc(i);
-          images[i - 1] = img;
-        }
-      }
-    }
-
-    // Step 1: Preload initial intro frames
-    let introLoadedCount = 0;
-    for (let i = 1; i <= introStartFrame; i++) {
+    // Preload ALL frames upfront since they are local (fast)
+    let loadedCount = 0;
+    for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       img.src = getImgSrc(i);
       images[i - 1] = img;
       img.onload = () => {
-        introLoadedCount++;
-        if (i === introStartFrame) {
+        loadedCount++;
+        // Draw the first frame as soon as it loads
+        if (i === 1) {
           requestAnimationFrame(() => draw(img));
-        }
-        if (introLoadedCount === introStartFrame) {
-          preloadRemainingImages();
         }
       };
     }
 
-    // Step 2: GSAP ScrollTrigger Sequence
+    // GSAP ScrollTrigger Sequence — scrubs through the 600vh hero section
     const trigger = gsap.to(frameObj, {
       frame: totalFrames,
       ease: 'none',
@@ -119,7 +95,7 @@ export default function Hero() {
       },
     });
 
-    // Scroll indicator animation
+    // Scroll indicator fade-out
     gsap.to('#scroll-indicator', {
       opacity: 0,
       duration: 0.3,

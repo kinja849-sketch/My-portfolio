@@ -47,18 +47,38 @@ export default function CanvasBackground() {
     }
 
     let lastDrawnFrame = -1;
+
     function renderFrame(index) {
       const clamped = Math.max(1, Math.min(totalFrames, index));
       if (clamped === lastDrawnFrame) return;
       lastDrawnFrame = clamped;
 
-      const img = images[clamped - 1];
-      if (img && img.complete && img.naturalWidth !== 0) {
+      let img = images[clamped - 1];
+
+      if (!img) {
+        img = new Image();
+        img.src = getImgSrc(clamped);
+        images[clamped - 1] = img;
+        img.onload = () => {
+          if (Math.round(frameObj.frame) === clamped) {
+            requestAnimationFrame(() => draw(img));
+          }
+        };
+        return;
+      }
+
+      if (img.complete && img.naturalWidth !== 0) {
         requestAnimationFrame(() => draw(img));
+      } else {
+        img.onload = () => {
+          if (Math.round(frameObj.frame) === clamped) {
+            requestAnimationFrame(() => draw(img));
+          }
+        };
       }
     }
 
-    // Preload all 300 frames
+    // Preload all 300 frames immediately in parallel
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       img.src = getImgSrc(i);
@@ -68,7 +88,7 @@ export default function CanvasBackground() {
       }
     }
 
-    // ScrollTrigger spans the ENTIRE page — all 300 frames from top to bottom
+    // ScrollTrigger: scrubs smoothly through all 300 frames from top to bottom of page
     const trigger = gsap.to(frameObj, {
       frame: totalFrames,
       ease: 'none',
@@ -76,7 +96,7 @@ export default function CanvasBackground() {
         trigger: document.documentElement,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: isMobile ? 0.5 : 0.3,
+        scrub: isMobile ? 0.4 : 0.2,
         invalidateOnRefresh: true,
       },
       onUpdate: function () {
@@ -84,19 +104,19 @@ export default function CanvasBackground() {
       },
     });
 
-    // Fade out scroll indicator on initial scroll
-    gsap.to('#scroll-indicator', {
-      opacity: 0,
-      duration: 0.3,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.section_hero',
-        start: '5% top',
-        toggleActions: 'play none none reverse',
-      },
-    });
+    // Refresh ScrollTrigger after DOM is fully loaded & when window resizes
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('resize', handleRefresh);
+    window.addEventListener('load', handleRefresh);
+    setTimeout(handleRefresh, 500);
+    setTimeout(handleRefresh, 1500);
 
     return () => {
+      window.removeEventListener('resize', handleRefresh);
+      window.removeEventListener('load', handleRefresh);
       if (trigger.scrollTrigger) trigger.scrollTrigger.kill();
     };
   }, []);

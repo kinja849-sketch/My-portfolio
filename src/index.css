@@ -217,20 +217,27 @@ body {
   100% { transform: translateY(0.4375rem); opacity: 0; }
 }
 
-/* Vortex Text Styles */
+/* Vortex Text Styles - Crisp, High-Contrast Legibility */
 .vortex-text {
   position: relative;
+  color: #0d0d0d !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 1.2rem !important;
+  font-weight: 500 !important;
+  line-height: 1.75 !important;
+  text-align: center !important;
+  max-width: 50rem !important;
+  margin: 0 auto !important;
+  opacity: 1 !important;
+  letter-spacing: -0.01em !important;
 }
 
 .char {
   display: inline-block;
   white-space: pre;
   position: relative;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform, opacity;
-  opacity: 1;
+  will-change: opacity, transform;
+  color: #0d0d0d !important;
 }
 
 /* SVG Signature */

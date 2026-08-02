@@ -16,39 +16,41 @@ export default function Hero() {
     const stackGroups = rightCol.querySelectorAll('.hero-discribe-wrap');
     if (!stackGroups.length) return;
 
-    // Set initial state: all stack groups hidden, shifted down
-    gsap.set(stackGroups, { opacity: 0, y: 40 });
+    // Initially dim all category stack groups
+    gsap.set(stackGroups, { opacity: 0.25, scale: 0.96, y: 15 });
 
-    // Each stack group reveals progressively at different scroll positions within the hero
-    stackGroups.forEach((group, i) => {
-      const startPct = 15 + i * 18; // 15%, 33%, 51%, 69%
-      const endPct = startPct + 15;
-
-      gsap.to(group, {
-        opacity: 1,
-        y: 0,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: `${startPct}% top`,
-          end: `${endPct}% top`,
-          scrub: 0.6,
-        },
-      });
-
-      // Fade out near the end of the hero section
-      gsap.to(group, {
-        opacity: 0,
-        y: -20,
-        ease: 'power1.in',
-        scrollTrigger: {
-          trigger: section,
-          start: '85% top',
-          end: '95% top',
-          scrub: 0.4,
-        },
-      });
+    // Create scroll trigger timeline to select items one by one as user scrolls through the hero section
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+      },
     });
+
+    // Step 1: Highlight Frontend (Category 1)
+    tl.to(stackGroups[0], { opacity: 1, scale: 1.05, y: 0, duration: 1 })
+      .to(stackGroups[0], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+
+    // Step 2: Highlight Backend (Category 2)
+    if (stackGroups[1]) {
+      tl.to(stackGroups[1], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
+        .to(stackGroups[1], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+    }
+
+    // Step 3: Highlight Education (Category 3)
+    if (stackGroups[2]) {
+      tl.to(stackGroups[2], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
+        .to(stackGroups[2], { opacity: 0.3, scale: 1, y: 0, duration: 1 });
+    }
+
+    // Step 4: Highlight Languages (Category 4)
+    if (stackGroups[3]) {
+      tl.to(stackGroups[3], { opacity: 1, scale: 1.05, y: 0, duration: 1 }, '-=0.5')
+        .to(stackGroups[3], { opacity: 0.8, scale: 1, y: 0, duration: 1 });
+    }
 
     // Fade out scroll indicator on initial scroll
     gsap.to('#scroll-indicator', {
@@ -61,14 +63,6 @@ export default function Hero() {
         toggleActions: 'play none none reverse',
       },
     });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === section || st.vars?.trigger === section) {
-          // Leave cleanup to GSAP's internal handling
-        }
-      });
-    };
   }, []);
 
   return (
@@ -118,26 +112,34 @@ export default function Hero() {
                   I care about clean code, maintainable systems, and delivering real results. Combining analytical rigor with modern full-stack development.
                   <br />
                 </p>
-                <a href="#footernav" className="link-hero w-inline-block">
-                  <div className="btn-contact">
+
+                {/* DEACTIVATED "Get in Touch" button as requested */}
+                <div
+                  className="link-hero w-inline-block"
+                  style={{ opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <div className="btn-contact" style={{ backgroundColor: '#666', borderColor: '#666' }}>
                     <div className="btn-tete-wrap">
-                      <div className="text-btn">Get in Touch</div>
+                      <div className="text-btn" style={{ color: '#aaa' }}>Get in Touch (Deactivated)</div>
                       <img
                         src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
                         loading="lazy"
                         alt="arrow"
                         className="icon-btn"
+                        style={{ filter: 'grayscale(100%)' }}
                       />
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
             </div>
 
             <div className="hero-headig-center"></div>
 
+            {/* Category stack: selected one by one via ScrollTrigger timeline */}
             <div ref={rightColumnRef} className="hero-headig-right">
-              <div className="hero-discribe-wrap">
+              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
                 <div className="text-hero">Frontend</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack">JavaScript (ES6+)</div>
@@ -145,7 +147,7 @@ export default function Hero() {
                   <div className="tetxt-stack is-3">ReactJS &amp; Tailwind CSS</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap">
+              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
                 <div className="text-hero">Backend</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack is-4">NodeJS</div>
@@ -153,14 +155,14 @@ export default function Hero() {
                   <div className="tetxt-stack is-6">REST &amp; Webhooks</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap">
+              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
                 <div className="text-hero">Education</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack is-8">B. Finance &amp; Accounting</div>
                   <div className="tetxt-stack is-9">Muhammadiyah Univ. Indonesia</div>
                 </div>
               </div>
-              <div className="hero-discribe-wrap">
+              <div className="hero-discribe-wrap" style={{ transition: 'all 0.3s ease' }}>
                 <div className="text-hero">Languages</div>
                 <div className="discribe-item">
                   <div className="tetxt-stack">English &amp; Swahili (Native)</div>
@@ -180,7 +182,7 @@ export default function Hero() {
                 <path id="circlePath" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"></path>
               </defs>
               <text fill="white" fontFamily="Arial, sans-serif" fontSize="9" letterSpacing="3.5" fontWeight="bold">
-                <textPath href="##circlePath">SCROLL DOWN • SCROLL DOWN •</textPath>
+                <textPath href="#circlePath">SCROLL DOWN • SCROLL DOWN •</textPath>
               </text>
             </svg>
             <svg className="mouse-icon" width="20" height="34" viewBox="0 0 24 40" fill="none">

@@ -70,7 +70,7 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
-        // Vortex text assembly — original timing, easing, scroll-trigger preserved exactly
+        // Vortex text assembly animation — assembles into centered paragraph
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
@@ -97,22 +97,18 @@ export default function AboutSection() {
       });
     }
 
-    // Profile image: stays perfectly centered during text assembly phase.
-    // Only receives a subtle upward push AFTER the paragraph content begins appearing.
-    // No horizontal movement. No scaling. No distortion.
+    // Profile Image: Slightly pushed upward on scroll without crossing the top line
     if (profileImageRef.current && aboutSection) {
       gsap.set(profileImageRef.current, { y: 0 });
 
       gsap.to(profileImageRef.current, {
-        y: -30,
+        y: -25,
         ease: 'power2.out',
         scrollTrigger: {
           trigger: aboutSection,
-          // Starts later than the text assembly (which starts at top 20%)
-          // so image only moves AFTER text has substantially formed
-          start: '40% top',
-          end: '70% top',
-          scrub: 1,
+          start: 'top 20%',
+          end: 'bottom 120%',
+          scrub: window.innerWidth < 768 ? 0.8 : 1.2,
           invalidateOnRefresh: true,
         },
       });
@@ -174,25 +170,35 @@ export default function AboutSection() {
           <div className="line-about"></div>
         </div>
 
-        <div className="about-heading-wrapper">
+        <div className="about-heading-wrapper" style={{ textAlign: 'center' }}>
           <h3 className="head-servisec">
             ABOUT <em className="italic-text">Me</em>
           </h3>
         </div>
 
-        <div className="container-about-heading">
-          {/* Profile image: uses original image-4 class, centered in container-about-heading.
-              Stays centered during letter assembly. Only subtle upward push after text forms. */}
-          <img
-            ref={profileImageRef}
-            src="/photo_2026-05-29_01-43-44-removebg-preview.png"
-            loading="lazy"
-            alt="Najib Abdirahman Mohammed"
-            className="image-4"
-          />
+        <div className="container-about-heading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          {/* Profile image: Centered above paragraph text, slightly pushed upward on scroll without crossing the top line */}
+          <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+            <img
+              ref={profileImageRef}
+              src="/photo_2026-05-29_01-43-44-removebg-preview.png"
+              loading="lazy"
+              alt="Najib Abdirahman Mohammed"
+              style={{
+                width: '8rem',
+                height: 'auto',
+                objectFit: 'contain',
+                borderRadius: '0.75rem',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                display: 'inline-block',
+                willChange: 'transform',
+                zIndex: 10
+              }}
+            />
+          </div>
 
-          <div className="heading-about-wrapper">
-            <p ref={vortexTextRef} className="vortex-text">
+          <div className="heading-about-wrapper" style={{ width: '100%', maxWidth: '42rem', display: 'flex', justifyContent: 'center', margin: '0 auto' }}>
+            <p ref={vortexTextRef} className="vortex-text" style={{ textAlign: 'center', margin: '0 auto', fontSize: '1.25rem', lineHeight: '1.6' }}>
               I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications using modern technologies (JavaScript, React, Node.js, Supabase) focusing on creating efficient, user-friendly, and scalable solutions. I am fluent in English, Swahili, and Somali, with conversational Arabic. My goal is to grow as a full-stack developer, delivering high-quality products while applying the same precision and efficiency I bring to financial analysis and operations.
             </p>
           </div>

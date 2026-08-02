@@ -10,27 +10,21 @@ const PROJECTS = [
     category: 'Web Application',
     tagline: 'Building modern, scalable web applications with clean architecture, strong attention to detail, and a focus on performance and user experience.',
     stack: ['JavaScript', 'React', 'NodeJS', 'Tailwind'],
-    video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1782724727/feadship_optimized_cfeclk.webm',
-    mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb93af0165d490d94894_feadship.webp',
-    link: 'https://www.vicalary.com'
+    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb93af0165d490d94894_feadship.webp',
   },
   {
     name: 'YANHAL',
     category: 'Web Platform',
     tagline: 'Interactive, responsive web platform designed with modern UI standards and efficient frontend state management.',
     stack: ['React', 'TypeScript', 'NodeJS', 'Tailwind'],
-    video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781261282/studio_yumf1v.webm',
-    mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb9dd61285375257c08b_studio.webp',
-    link: 'https://yanhal.netlify.app/'
+    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb9dd61285375257c08b_studio.webp',
   },
   {
     name: 'YADA LEARN',
     category: 'EdTech Platform',
     tagline: 'E-learning web application focused on interactive content delivery, real-time database features, and user engagement.',
     stack: ['React', 'Supabase', 'TypeScript', 'NodeJS'],
-    video: 'https://res.cloudinary.com/df3m5glwo/video/upload/v1781261274/rosestudio_fibvjw.webm',
-    mobileImage: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beba279763ce104996b47_rose.webp',
-    link: 'https://yadalearnapp.netlify.app/'
+    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beba279763ce104996b47_rose.webp',
   }
 ];
 
@@ -40,16 +34,12 @@ export default function WorkSection() {
   const leftCardRef = useRef(null);
   const rightCardRef = useRef(null);
   const introCardRef = useRef(null);
-  const hudPctRef = useRef(null);
-  const hudFillRef = useRef(null);
-  const hudSceneRef = useRef(null);
 
   useEffect(() => {
     const sectionEl = sectionRef.current;
     const cubeEl = cubeRef.current;
     if (!sectionEl || !cubeEl) return;
 
-    const isMobile = window.innerWidth < 768;
     const SCENE_COUNT = PROJECTS.length + 1;
     const STOPS = [
       { rx: 90, ry: 0 },
@@ -74,7 +64,6 @@ export default function WorkSection() {
       const name = cardEl.querySelector('.card-name');
       const tag = cardEl.querySelector('.card-tagline');
       const stack = cardEl.querySelector('.card-stack');
-      const btn = cardEl.querySelector('.card-btn');
 
       if (cat) cat.textContent = project.category;
       if (name) name.textContent = project.name;
@@ -87,7 +76,6 @@ export default function WorkSection() {
           stack.appendChild(span);
         });
       }
-      if (btn) btn.href = project.link;
     }
 
     let lastSceneIndex = -1;
@@ -99,79 +87,35 @@ export default function WorkSection() {
       scrub: 0.5,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
-        const p = self.progress;
-        const { rx, ry } = getCubeTransform(p);
-        cubeEl.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        const progress = self.progress;
+        const transform = getCubeTransform(progress);
+        cubeEl.style.transform = `rotateX(${transform.rx}deg) rotateY(${transform.ry}deg)`;
 
-        const pct = Math.round(p * 100);
-        if (hudPctRef.current) hudPctRef.current.textContent = `${String(pct).padStart(3, '0')}%`;
-        if (hudFillRef.current) hudFillRef.current.style.width = `${pct}%`;
+        const rawScene = progress * (SCENE_COUNT - 1);
+        const sceneIndex = Math.min(Math.floor(rawScene), SCENE_COUNT - 1);
 
-        const currentScene = Math.min(SCENE_COUNT - 1, Math.floor(p * SCENE_COUNT));
+        if (sceneIndex !== lastSceneIndex) {
+          lastSceneIndex = sceneIndex;
 
-        if (currentScene !== lastSceneIndex) {
-          lastSceneIndex = currentScene;
-
-          if (currentScene === 0) {
-            if (hudSceneRef.current) hudSceneRef.current.textContent = 'OVERVIEW';
+          if (sceneIndex === 0) {
             if (introCardRef.current) introCardRef.current.style.opacity = '1';
-            if (leftCardRef.current) {
-              leftCardRef.current.style.opacity = '0';
-              leftCardRef.current.style.pointerEvents = 'none';
-              leftCardRef.current.style.transform = isMobile ? 'translateX(-50%) translateY(15px)' : 'translateY(-50%) translateX(-20px)';
-            }
-            if (rightCardRef.current) {
-              rightCardRef.current.style.opacity = '0';
-              rightCardRef.current.style.pointerEvents = 'none';
-              rightCardRef.current.style.transform = isMobile ? 'translateX(-50%) translateY(15px)' : 'translateY(-50%) translateX(20px)';
-            }
-          } else {
+            if (leftCardRef.current) leftCardRef.current.style.opacity = '0';
+            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
+          } else if (sceneIndex === 1) {
             if (introCardRef.current) introCardRef.current.style.opacity = '0';
-            const project = PROJECTS[currentScene - 1];
-            if (project) {
-              if (hudSceneRef.current) hudSceneRef.current.textContent = project.category;
-              if (isMobile) {
-                const targetCard = currentScene % 2 !== 0 ? leftCardRef.current : rightCardRef.current;
-                const hiddenCard = currentScene % 2 !== 0 ? rightCardRef.current : leftCardRef.current;
-                updateCardContent(targetCard, project);
-                if (targetCard) {
-                  targetCard.style.opacity = '1';
-                  targetCard.style.pointerEvents = 'auto';
-                  targetCard.style.transform = 'translateX(-50%) translateY(0px)';
-                }
-                if (hiddenCard) {
-                  hiddenCard.style.opacity = '0';
-                  hiddenCard.style.pointerEvents = 'none';
-                  hiddenCard.style.transform = 'translateX(-50%) translateY(15px)';
-                }
-              } else {
-                if (currentScene % 2 !== 0) {
-                  updateCardContent(leftCardRef.current, project);
-                  if (leftCardRef.current) {
-                    leftCardRef.current.style.opacity = '1';
-                    leftCardRef.current.style.pointerEvents = 'auto';
-                    leftCardRef.current.style.transform = 'translateY(-50%) translateX(0px)';
-                  }
-                  if (rightCardRef.current) {
-                    rightCardRef.current.style.opacity = '0';
-                    rightCardRef.current.style.pointerEvents = 'none';
-                    rightCardRef.current.style.transform = 'translateY(-50%) translateX(20px)';
-                  }
-                } else {
-                  updateCardContent(rightCardRef.current, project);
-                  if (rightCardRef.current) {
-                    rightCardRef.current.style.opacity = '1';
-                    rightCardRef.current.style.pointerEvents = 'auto';
-                    rightCardRef.current.style.transform = 'translateY(-50%) translateX(0px)';
-                  }
-                  if (leftCardRef.current) {
-                    leftCardRef.current.style.opacity = '0';
-                    leftCardRef.current.style.pointerEvents = 'none';
-                    leftCardRef.current.style.transform = 'translateY(-50%) translateX(-20px)';
-                  }
-                }
-              }
-            }
+            updateCardContent(leftCardRef.current, PROJECTS[0]);
+            if (leftCardRef.current) leftCardRef.current.style.opacity = '1';
+            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
+          } else if (sceneIndex === 2) {
+            if (introCardRef.current) introCardRef.current.style.opacity = '0';
+            updateCardContent(rightCardRef.current, PROJECTS[1]);
+            if (leftCardRef.current) leftCardRef.current.style.opacity = '0';
+            if (rightCardRef.current) rightCardRef.current.style.opacity = '1';
+          } else if (sceneIndex === 3) {
+            if (introCardRef.current) introCardRef.current.style.opacity = '0';
+            updateCardContent(leftCardRef.current, PROJECTS[2]);
+            if (leftCardRef.current) leftCardRef.current.style.opacity = '1';
+            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
           }
         }
       }
@@ -200,7 +144,7 @@ export default function WorkSection() {
             </div>
           </div>
 
-          {/* Left Card Details */}
+          {/* Left Card Details (All links deactivated) */}
           <div
             ref={leftCardRef}
             id="card-left"
@@ -234,16 +178,17 @@ export default function WorkSection() {
                   <span key={idx}>{item}</span>
                 ))}
               </div>
-              <a href={PROJECTS[0].link} target="_blank" rel="noreferrer" className="card-btn">
-                View Project
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: '6px', verticalAlign: 'middle', display: 'inline-block' }}>
-                  <path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
-              </a>
+              <div
+                className="card-btn"
+                style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
+                onClick={(e) => e.preventDefault()}
+              >
+                View Project (Deactivated)
+              </div>
             </div>
           </div>
 
-          {/* Right Card Details */}
+          {/* Right Card Details (All links deactivated) */}
           <div
             ref={rightCardRef}
             id="card-right"
@@ -277,16 +222,17 @@ export default function WorkSection() {
                   <span key={idx}>{item}</span>
                 ))}
               </div>
-              <a href={PROJECTS[1].link} target="_blank" rel="noreferrer" className="card-btn">
-                View Project
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: '6px', verticalAlign: 'middle', display: 'inline-block' }}>
-                  <path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
-              </a>
+              <div
+                className="card-btn"
+                style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
+                onClick={(e) => e.preventDefault()}
+              >
+                View Project (Deactivated)
+              </div>
             </div>
           </div>
 
-          {/* 3D Prism Cube */}
+          {/* 3D Prism Cube: Uses static project images (video playback removed as requested) */}
           <div
             ref={cubeRef}
             id="prism-cube"
@@ -300,22 +246,22 @@ export default function WorkSection() {
             }}
           >
             <div className="cube-face f-top" style={{ position: 'absolute', left: 0, right: 0, top: 'calc(50% - min(72vw, 550px)/2)', width: '100%', height: 'min(72vw, 550px)', transform: 'rotateX(-90deg) translateZ(calc(calc(min(72vw, 550px) * 9 / 16) / 2))' }}>
-              <video src={PROJECTS[0].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[0].image} alt={PROJECTS[0].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-front" style={{ position: 'absolute', inset: 0, transform: 'translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <video src={PROJECTS[0].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[0].image} alt={PROJECTS[0].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-right" style={{ position: 'absolute', inset: 0, transform: 'rotateY(90deg) translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <video src={PROJECTS[1].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[1].image} alt={PROJECTS[1].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-back" style={{ position: 'absolute', inset: 0, transform: 'rotateY(180deg) translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <video src={PROJECTS[2].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[2].image} alt={PROJECTS[2].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-left" style={{ position: 'absolute', inset: 0, transform: 'rotateY(-90deg) translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <video src={PROJECTS[0].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[0].image} alt={PROJECTS[0].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-bottom" style={{ position: 'absolute', left: 0, right: 0, top: 'calc(50% - min(72vw, 550px)/2)', width: '100%', height: 'min(72vw, 550px)', transform: 'rotateX(90deg) translateZ(calc(calc(min(72vw, 550px) * 9 / 16) / 2))' }}>
-              <video src={PROJECTS[1].video} autoPlay muted loop playsInline></video>
+              <img src={PROJECTS[1].image} alt={PROJECTS[1].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
 
@@ -344,19 +290,6 @@ export default function WorkSection() {
             <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255, 255, 255, 0.9)', marginTop: '2rem' }}>
               Scroll to explore
             </p>
-          </div>
-
-          {/* HUD Container */}
-          <div className="hud-container">
-            <div ref={hudPctRef} id="hud-pct" style={{ fontFamily: 'monospace', fontSize: '0.6rem', color: 'rgba(255,255,255,0.35)' }}>
-              000%
-            </div>
-            <div style={{ width: '6rem', height: '1px', background: 'rgba(255,255,255,0.06)', marginTop: '0.4rem', position: 'relative' }}>
-              <div ref={hudFillRef} id="hud-fill" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '0%', background: '#fff', opacity: 0.65 }}></div>
-            </div>
-            <div ref={hudSceneRef} id="hud-scene" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.45rem', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.2)', marginTop: '0.3rem', textTransform: 'uppercase' }}>
-              OVERVIEW
-            </div>
           </div>
         </div>
       </div>

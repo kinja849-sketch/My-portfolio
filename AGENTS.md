@@ -833,3 +833,10 @@ The stack cards should reflect Najib's actual skill set as a Full-Stack Develope
 5. **Verify after each task**: Run `npm run lint` and `npm run build` after every task.
 6. **Update this file**: After completing a task, edit this AGENTS.md to mark it `[x]`.
 7. **New conversation pickup**: If a new conversation starts, read this AGENTS.md, find the first `[ ]` task, and begin from there.
+
+---
+# 21. Project Credentials & Access Tokens
+- **GitHub Repository**: https://github.com/kinja849-sketch/My-portfolio
+- **GitHub Auth Method**: Personal Access Token (PAT configured in local git remote origin)
+
+

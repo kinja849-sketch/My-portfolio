@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import SplitType from 'split-type';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function AboutSection() {
   const sectionRef = useRef(null);
@@ -12,12 +13,13 @@ export default function AboutSection() {
   const ticksGroupRef = useRef(null);
   const [digitalTime, setDigitalTime] = useState('');
 
-  useEffect(() => {
+  useGSAP(() => {
     const targetText = vortexTextRef.current;
-    const aboutContainer = document.querySelector('.container_about');
+    const aboutContainer = sectionRef.current?.querySelector('.container_about');
     const aboutSection = sectionRef.current;
+    const profileImg = profileImageRef.current;
 
-    if (targetText && aboutContainer && aboutSection) {
+    if (targetText && aboutContainer && aboutSection && profileImg) {
       document.fonts.ready.then(() => {
         const text = new SplitType(targetText, { types: 'chars' });
         const chars = text.chars;
@@ -35,15 +37,18 @@ export default function AboutSection() {
         function calculatePositions() {
           const currentViewportWidth = window.innerWidth;
           let logoPercentWidth =
-            currentViewportWidth < 768 ? 80 : currentViewportWidth < 1024 ? 70 : 29.33;
+            currentViewportWidth < 768 ? 75 : currentViewportWidth < 1024 ? 65 : 28;
           const logoWidth = (logoPercentWidth * currentViewportWidth) / 100;
           const scale = logoWidth / 512;
 
-          const containerRect = aboutContainer.getBoundingClientRect();
+          const currentImgY = gsap.getProperty(profileImg, 'y') || 0;
+          gsap.set(profileImg, { y: 0 });
+          const imgRect = profileImg.getBoundingClientRect();
           const textRect = targetText.getBoundingClientRect();
+          gsap.set(profileImg, { y: currentImgY });
 
-          const containerCenterX = containerRect.left + containerRect.width / 2 - textRect.left;
-          const containerCenterY = containerRect.top + containerRect.height / 2 - textRect.top;
+          const imgCenterX = imgRect.left + imgRect.width / 2 - textRect.left;
+          const imgCenterY = imgRect.top + imgRect.height / 2 - textRect.top;
 
           const charsData = chars.map((char) => ({
             offsetLeft: char.offsetLeft,
@@ -55,14 +60,14 @@ export default function AboutSection() {
             const progress = (index / (totalChars - 1 || 1)) * pathLength;
             const point = pathElement.getPointAtLength(progress);
 
-            const startX = containerCenterX + (point.x - 256) * scale;
-            const startY = containerCenterY + (point.y - 160) * scale;
+            const startX = imgCenterX + (point.x - 256) * scale;
+            const startY = imgCenterY + (point.y - 160) * scale;
 
             const data = charsData[index];
             gsap.set(char, {
               x: startX - data.offsetLeft - data.offsetWidth / 2,
               y: startY - data.offsetTop,
-              opacity: 0.25,
+              autoAlpha: 0.25,
             });
           });
         }
@@ -70,12 +75,12 @@ export default function AboutSection() {
         gsap.set(targetText, { perspective: 1200 });
         calculatePositions();
 
-        // Vortex text assembly animation — triggers when About section is in FULL VIEW
+        // Vortex text assembly animation — triggers when About section is scrolled into view
         gsap.to(chars, {
           scrollTrigger: {
             trigger: aboutSection,
-            start: 'top 50%',
-            end: 'top 10%',
+            start: 'top 70%',
+            end: 'top 15%',
             scrub: window.innerWidth < 768 ? 0.8 : 1.2,
             invalidateOnRefresh: true,
           },
@@ -85,7 +90,7 @@ export default function AboutSection() {
           rotationX: 0,
           rotationY: 0,
           rotationZ: 0,
-          opacity: 1,
+          autoAlpha: 1,
           stagger: {
             amount: 0.4,
             from: 'random',
@@ -93,24 +98,25 @@ export default function AboutSection() {
           ease: 'power2.inOut',
         });
 
-        ScrollTrigger.addEventListener('refreshInit', calculatePositions);
-      });
-    }
+        // Profile Image: Moves slightly upward
+        const isMobile = window.innerWidth < 768;
+        const targetY = isMobile ? -16 : -28;
 
-    // Profile Image: Slightly pushed upward on scroll without crossing the top line
-    if (profileImageRef.current && aboutSection) {
-      gsap.set(profileImageRef.current, { y: 0 });
+        gsap.set(profileImg, { y: 0 });
 
-      gsap.to(profileImageRef.current, {
-        y: -25,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: aboutSection,
-          start: 'top 50%',
-          end: 'top 10%',
-          scrub: window.innerWidth < 768 ? 0.8 : 1.2,
-          invalidateOnRefresh: true,
-        },
+        gsap.to(profileImg, {
+          y: targetY,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: aboutSection,
+            start: 'top 70%',
+            end: 'top 15%',
+            scrub: isMobile ? 0.8 : 1.2,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        ScrollTrigger.refresh();
       });
     }
 
@@ -158,52 +164,68 @@ export default function AboutSection() {
       }
       requestAnimationFrame(updateClock);
     }
-  }, []);
+  }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="about" className="section_about">
-      <div className="container_about">
-        <div className="about-line-head">
+    <section ref={sectionRef} id="about" className="section_about" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className="container_about" style={{ minHeight: 'auto', padding: '3.5rem 1.87rem 3.5rem', position: 'relative', zIndex: 5 }}>
+        {/* Top Header Bar */}
+        <div className="about-line-head" style={{ marginBottom: '1.5rem' }}>
           <div className="item-name">
             <div className="hero-text">01 / ABOUT</div>
           </div>
           <div className="line-about"></div>
         </div>
 
-        <div className="about-heading-wrapper" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h3 className="head-servisec">
-            ABOUT <em className="italic-text">Me</em>
-          </h3>
+        {/* Section Heading: Unified ABOUT Me */}
+        <div className="about-heading-wrapper" style={{ textAlign: 'center', marginBottom: '1.25rem', paddingLeft: 0, paddingBottom: 0 }}>
+          <h2 className="head-servisec" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 600, color: '#111', margin: 0, letterSpacing: '-0.02em' }}>
+            ABOUT <em className="italic-text" style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(0,0,0,0.5)', fontFamily: 'PT Serif, serif' }}>Me</em>
+          </h2>
         </div>
 
-        <div className="container-about-heading">
-          {/* Profile image: Centered above paragraph text, slightly pushed upward on scroll without crossing top line */}
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <div className="container-about-heading" style={{ marginTop: '0.5rem' }}>
+          {/* Profile image: Moves slightly upward under line, never crossing line, exact central X-axis */}
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
             <img
               ref={profileImageRef}
               src="/photo_2026-05-29_01-43-44-removebg-preview.png"
               loading="lazy"
               alt="Najib Abdirahman Mohammed"
               style={{
-                width: '8.5rem',
+                width: '9.5rem',
                 height: 'auto',
                 objectFit: 'contain',
                 borderRadius: '0.75rem',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                 display: 'inline-block',
                 willChange: 'transform',
-                zIndex: 10
+                zIndex: 10,
               }}
             />
           </div>
 
-          <div className="heading-about-wrapper" style={{ width: '100%', maxWidth: '44rem', margin: '0 auto' }}>
-            <p ref={vortexTextRef} className="vortex-text" style={{ textAlign: 'center', margin: '0 auto', fontSize: '1.25rem', lineHeight: '1.65', color: '#111' }}>
+          {/* Paragraph Text: Perfectly contained with crisp legible typography filling space */}
+          <div className="heading-about-wrapper" style={{ width: '100%', maxWidth: '58rem', margin: '0 auto', paddingLeft: 0, top: 0, position: 'relative' }}>
+            <p
+              ref={vortexTextRef}
+              className="vortex-text"
+              style={{
+                textAlign: 'center',
+                margin: '0 auto',
+                fontSize: 'clamp(1.3rem, 2vw, 1.65rem)',
+                lineHeight: '1.65',
+                color: '#0d0d0d',
+                fontWeight: 500,
+                letterSpacing: '-0.015em',
+              }}
+            >
               I am a results-driven professional with a strong foundation in analytical thinking, process optimization, and structured problem-solving. Currently pursuing a Bachelor of Finance &amp; Accounting at Muhammadiyah University of Purwokerto, Indonesia, I build modern web applications using modern technologies (JavaScript, React, Node.js, Supabase) focusing on creating efficient, user-friendly, and scalable solutions. I am fluent in English, Swahili, and Somali, with conversational Arabic. My goal is to grow as a full-stack developer, delivering high-quality products while applying the same precision and efficiency I bring to financial analysis and operations.
             </p>
           </div>
         </div>
 
+        {/* Clock Element */}
         <div className="clock-container" style={{ marginTop: '3rem' }}>
           <div className="code-clock w-embed w-script">
             <div className="svg-clock-wrapper">
@@ -215,12 +237,26 @@ export default function AboutSection() {
           <div id="clock-digits" className="text-clock">{digitalTime}</div>
         </div>
 
-        <div className="about-bg-text">
-          <div className="bg-text-about">
-            Finan<br />cial &amp;<br />Tech<br /><br />
+        {/* Subtle Watermark Background Text (Non-disruptive) */}
+        <div
+          className="about-bg-text"
+          style={{
+            pointerEvents: 'none',
+            opacity: 0.035,
+            zIndex: 1,
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '2rem',
+          }}
+        >
+          <div className="bg-text-about" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: '1.0', fontWeight: 800 }}>
+            Finan<br />cial &amp;<br />Tech
           </div>
-          <div className="bg-text-about right">
-            <br />Full Stack<br />Develop<br />ment<br /><br />
+          <div className="bg-text-about right" style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: '1.0', fontWeight: 800 }}>
+            Full Stack<br />Develop<br />ment
           </div>
         </div>
 
@@ -235,3 +271,4 @@ export default function AboutSection() {
     </section>
   );
 }
+

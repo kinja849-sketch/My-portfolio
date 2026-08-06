@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
@@ -46,13 +47,13 @@ export default function App() {
     <div className="page-wrapper">
       {!loadingComplete && <Preloader onComplete={() => setLoadingComplete(true)} />}
 
-      {/* Fixed canvas background — renders ALL 300 frames across full page scroll */}
-      <CanvasBackground />
+      {/* Fixed canvas background — plays intro after preloader, then scrubs frames on hero scroll */}
+      <CanvasBackground preloaderDone={loadingComplete} />
 
       <Navbar onOpenContact={() => setContactOpen(true)} />
 
       <main className="main-wrapper">
-        <Hero />
+        <Hero onOpenContact={() => setContactOpen(true)} />
         <AboutSection />
         <StackSection />
         <WorkSection />

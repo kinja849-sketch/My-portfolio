@@ -1,13 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP);
 
 export default function Preloader({ onComplete }) {
   const loaderRef = useRef(null);
   const counterRef = useRef(null);
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const textPaths = document.querySelectorAll(".loader svg textPath");
+  useGSAP(() => {
+    const loader = loaderRef.current;
+    if (!loader) return;
+
+    const textPaths = loader.querySelectorAll(".loader svg textPath");
     if (!textPaths.length) return;
 
     const startTextLengths = Array.from(textPaths).map((tp) => parseFloat(tp.getAttribute("textLength") || 0));
@@ -43,7 +49,7 @@ export default function Preloader({ onComplete }) {
     function animateRotation() {
       const spinDirection = Math.random() < 0.5 ? 1 : -1;
       loaderRotation += 25 * spinDirection;
-      const svgElement = document.querySelector(".loader svg");
+      const svgElement = loader.querySelector(".loader svg");
       if (svgElement) {
         gsap.to(svgElement, { 
           rotation: loaderRotation, 
@@ -66,19 +72,19 @@ export default function Preloader({ onComplete }) {
       },
       onComplete: () => {
         if (counterRef.current) {
-          gsap.to(counterRef.current, { opacity: 0, duration: 0.8, delay: 0.5 });
+          gsap.to(counterRef.current, { autoAlpha: 0, duration: 0.8, delay: 0.5 });
         }
       }
     });
 
-    const orbitTextElements = document.querySelectorAll(".loader .orbit-text");
-    gsap.set(orbitTextElements, { opacity: 0 });
+    const orbitTextElements = loader.querySelectorAll(".loader .orbit-text");
+    gsap.set(orbitTextElements, { autoAlpha: 0 });
     const orbitTextsReversed = Array.from(orbitTextElements).reverse();
 
-    gsap.to(orbitTextsReversed, { opacity: 1, duration: 1.2, stagger: 0.15, ease: "power1.out" });
+    gsap.to(orbitTextsReversed, { autoAlpha: 1, duration: 1.2, stagger: 0.15, ease: "power1.out" });
 
     gsap.to(orbitTextsReversed, {
-      opacity: 0,
+      autoAlpha: 0,
       duration: 1,
       stagger: 0.1,
       delay: 8.5,
@@ -86,7 +92,7 @@ export default function Preloader({ onComplete }) {
       onComplete: () => {
         if (loaderRef.current) {
           gsap.to(loaderRef.current, {
-            opacity: 0,
+            autoAlpha: 0,
             duration: 1.2,
             onComplete: () => {
               if (onComplete) onComplete();
@@ -95,7 +101,7 @@ export default function Preloader({ onComplete }) {
         }
       }
     });
-  }, [onComplete]);
+  }, { scope: loaderRef });
 
   return (
     <div ref={loaderRef} className="loader">
@@ -114,25 +120,25 @@ export default function Preloader({ onComplete }) {
             <path id="loader-orbit-7" d="M 500,175 A 325,325 0 0,1 500,825 A 325,325 0 0,1 500,175 A 325,325 0 0,1 500,825 A 325,325 0 0,1 500,175 A 325,325 0 0,1 500,825 L 500,175"></path>
             <path id="loader-orbit-8" d="M 500,250 A 250,250 0 0,1 500,750 A 250,250 0 0,1 500,250 A 250,250 0 0,1 500,750 A 250,250 0 0,1 500,250 A 250,250 0 0,1 500,750 L 500,250"></path>
             <text className="orbit-text">
-              <textPath href="#loader-orbit-1" startOffset="35%" textLength="300">3D SPLINE</textPath>
+              <textPath href="#loader-orbit-1" startOffset="35%" textLength="280">REACT.JS</textPath>
             </text>
             <text className="orbit-text">
-              <textPath href="#loader-orbit-2" startOffset="35%" textLength="280">THREE.JS</textPath>
+              <textPath href="#loader-orbit-2" startOffset="35%" textLength="250">NODE.JS</textPath>
             </text>
             <text className="orbit-text">
-              <textPath href="#loader-orbit-3" startOffset="35%" textLength="240">WEBFLOW</textPath>
+              <textPath href="#loader-orbit-3" startOffset="35%" textLength="310">FULL-STACK</textPath>
             </text>
             <text className="orbit-text">
               <textPath href="#loader-orbit-4" startOffset="35%" textLength="260">DEVELOPER</textPath>
             </text>
             <text className="orbit-text">
-              <textPath href="#loader-orbit-5" startOffset="35%" textLength="290">FRONTED</textPath>
+              <textPath href="#loader-orbit-5" startOffset="35%" textLength="300">JAVASCRIPT</textPath>
             </text>
             <text className="orbit-text">
               <textPath href="#loader-orbit-6" startOffset="35%" textLength="200">CREATIVE</textPath>
             </text>
             <text className="orbit-text">
-              <textPath href="#loader-orbit-7" startOffset="35%" textLength="210">ABDIRHMAN</textPath>
+              <textPath href="#loader-orbit-7" startOffset="35%" textLength="230">MOHAMMED</textPath>
             </text>
             <text className="orbit-text">
               <textPath href="#loader-orbit-8" startOffset="35%" textLength="190">NAJIB</textPath>

@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-export default function CanvasBackground() {
+export default function CanvasBackground({ preloaderDone }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const introTriggeredRef = useRef(false);
+  const startIntroRef = useRef(null);
 
+  // Main setup effect — runs once on mount
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -15,8 +19,10 @@ export default function CanvasBackground() {
 
     const ctx = canvas.getContext('2d');
     const totalFrames = 300;
-    const frameObj = { frame: 1 };
+    const introStartFrame = 25;
+    const frameObj = { frame: introStartFrame };
     const images = new Array(totalFrames);
+    const cleanups = [];
 
     const isMobile = window.innerWidth <= 768;
     canvas.width = isMobile ? 960 : 1920;
@@ -79,74 +85,162 @@ export default function CanvasBackground() {
       }
     }
 
-    // Preload all 300 frames
-    for (let i = 1; i <= totalFrames; i++) {
+    // ── PHASE 1: Preload intro frames (1–25) ──
+    let introLoadedCount = 0;
+    let introReady = false;
+
+    for (let i = 1; i <= introStartFrame; i++) {
       const img = new Image();
       img.src = getImgSrc(i);
       images[i - 1] = img;
-      if (i === 1) {
-        img.onload = () => requestAnimationFrame(() => draw(img));
+      img.onload = () => {
+        introLoadedCount++;
+        if (i === introStartFrame) {
+          requestAnimationFrame(() => draw(img));
+        }
+        if (introLoadedCount === introStartFrame) {
+          introReady = true;
+        }
+      };
+    }
+
+    // ── PHASE 2: Intro animation (frame 25 → 1) ──
+    function startIntroAnimation() {
+      if (!introReady) {
+        const retryTimeout = setTimeout(startIntroAnimation, 100);
+        cleanups.push(() => clearTimeout(retryTimeout));
+        return;
+      }
+
+      const introTl = gsap.timeline({
+        onComplete: initScrollTrigger,
+      });
+
+      introTl.to(frameObj, {
+        frame: 1,
+        duration: 1.0,
+        ease: 'power1.out',
+        onUpdate() {
+          renderFrame(Math.round(frameObj.frame));
+        },
+      });
+
+      cleanups.push(() => introTl.kill());
+    }
+
+    // Store reference so the preloaderDone effect can call it
+    startIntroRef.current = startIntroAnimation;
+
+    // ── PHASE 3: ScrollTrigger (frame 1 → totalFrames across entire portfolio page) ──
+    function initScrollTrigger() {
+      frameObj.frame = 1;
+      lastDrawnFrame = -1;
+
+      const mainWrapper = document.querySelector('.main-wrapper') || document.body;
+
+      const frameTween = gsap.to(frameObj, {
+        frame: totalFrames,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: mainWrapper,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: isMobile ? 0.8 : 0.5,
+          invalidateOnRefresh: true,
+        },
+        onUpdate() {
+          renderFrame(Math.round(frameObj.frame));
+        },
+      });
+
+      cleanups.push(() => {
+        if (frameTween.scrollTrigger) frameTween.scrollTrigger.kill();
+        frameTween.kill();
+      });
+
+      preloadRemainingFrames();
+    }
+
+    // ── Background preload of frames 26–300 ──
+    function preloadRemainingFrames() {
+      const step = isMobile ? 2 : 1;
+      for (let i = introStartFrame + 1; i <= totalFrames; i += step) {
+        if (!images[i - 1]) {
+          const img = new Image();
+          img.src = getImgSrc(i);
+          images[i - 1] = img;
+        }
       }
     }
 
-    // Scrub 300 frame sequence across the entire document (Hero, Stack, Work, Contact)
-    const frameTrigger = gsap.to(frameObj, {
-      frame: totalFrames,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: document.documentElement,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: isMobile ? 0.3 : 0.15,
-        invalidateOnRefresh: true,
-      },
-      onUpdate: function () {
-        renderFrame(Math.round(frameObj.frame));
-      },
-    });
-
-    // Hide canvas ONLY when inside the About Me section (.section_about)
+    // ── About section: fade canvas out/in so About section maintains clean exact style ──
     const aboutSection = document.querySelector('.section_about');
     if (aboutSection) {
-      gsap.to(container, {
-        opacity: 0,
-        ease: 'none',
+      const fadeOut = gsap.to(container, {
+        autoAlpha: 0,
+        ease: 'power1.inOut',
         scrollTrigger: {
           trigger: aboutSection,
-          start: 'top 80%',
-          end: 'top 20%',
+          start: 'top 85%',
+          end: 'top 15%',
           scrub: true,
         },
       });
 
-      gsap.to(container, {
-        opacity: 1,
-        ease: 'none',
+      const fadeIn = gsap.to(container, {
+        autoAlpha: 1,
+        ease: 'power1.inOut',
         scrollTrigger: {
           trigger: aboutSection,
-          start: 'bottom 80%',
-          end: 'bottom 20%',
+          start: 'bottom 85%',
+          end: 'bottom 15%',
           scrub: true,
         },
+      });
+
+      cleanups.push(() => {
+        if (fadeOut.scrollTrigger) fadeOut.scrollTrigger.kill();
+        if (fadeIn.scrollTrigger) fadeIn.scrollTrigger.kill();
       });
     }
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
-    };
-
+    // ── Resize handling ──
+    const handleRefresh = () => ScrollTrigger.refresh();
     window.addEventListener('resize', handleRefresh);
     window.addEventListener('load', handleRefresh);
-    setTimeout(handleRefresh, 300);
-    setTimeout(handleRefresh, 1000);
-    setTimeout(handleRefresh, 2500);
+    const t1 = setTimeout(handleRefresh, 300);
+    const t2 = setTimeout(handleRefresh, 1000);
+    const t3 = setTimeout(handleRefresh, 2500);
 
-    return () => {
+    cleanups.push(() => {
       window.removeEventListener('resize', handleRefresh);
       window.removeEventListener('load', handleRefresh);
-      if (frameTrigger.scrollTrigger) frameTrigger.scrollTrigger.kill();
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    });
+
+    // If preloaderDone was already true when this effect ran (e.g. fast reload),
+    // trigger intro immediately
+    if (introTriggeredRef.current) {
+      startIntroAnimation();
+    }
+
+    return () => {
+      cleanups.forEach((fn) => fn());
+      startIntroRef.current = null;
     };
   }, []);
+
+  // Watch preloaderDone prop — trigger intro animation when preloader completes
+  useEffect(() => {
+    if (preloaderDone && !introTriggeredRef.current) {
+      introTriggeredRef.current = true;
+      if (startIntroRef.current) {
+        startIntroRef.current();
+      }
+    }
+  }, [preloaderDone]);
 
   return (
     <div ref={containerRef} className="canvas-background-fixed">

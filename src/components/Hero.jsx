@@ -1,31 +1,39 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-export default function Hero() {
+export default function Hero({ onOpenContact }) {
   const sectionRef = useRef(null);
   const headingContainerRef = useRef(null);
+  const leftColumnRef = useRef(null);
   const rightColumnRef = useRef(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     const section = sectionRef.current;
     const rightCol = rightColumnRef.current;
+    const leftCol = leftColumnRef.current;
     const headingContainer = headingContainerRef.current;
-    if (!section || !rightCol) return;
+    if (!section || !rightCol || !leftCol) return;
 
     const stackGroups = rightCol.querySelectorAll('.hero-discribe-wrap');
-    if (!stackGroups.length) return;
+    const leftItems = leftCol.querySelectorAll('.heading-item');
 
-    // Initially hide all category stack groups completely
-    gsap.set(stackGroups, { opacity: 0, display: 'none' });
+    if (!stackGroups.length || !leftItems.length) return;
 
-    // Show ONLY category 1 (Frontend) at the very start
-    gsap.set(stackGroups[0], { opacity: 1, display: 'block' });
+    // Initially hide all right category stack groups except first
+    gsap.set(stackGroups, { autoAlpha: 0, display: 'none' });
+    gsap.set(stackGroups[0], { autoAlpha: 1, display: 'block' });
 
-    // GSAP ScrollTrigger timeline: As frames rotate, stack categories appear ONE BY ONE.
-    // When one appears, the previous one COMPLETELY disappears from the screen!
+    // Initially show Left Item 0 (Full-Stack Dev), hide Left Item 1 (MY FOCUS)
+    gsap.set(leftItems[0], { autoAlpha: 1, display: 'flex' });
+    if (leftItems[1]) {
+      gsap.set(leftItems[1], { autoAlpha: 0, display: 'none' });
+    }
+
+    // GSAP ScrollTrigger timeline: As frames rotate, content transitions smoothly
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -34,38 +42,42 @@ export default function Hero() {
         scrub: true,
         invalidateOnRefresh: true,
       },
+      defaults: { ease: 'power2.inOut' },
     });
 
-    // Segment 1 (0% to 25% scroll): Frontend visible -> then COMPLETELY DISAPPEARS
-    tl.to(stackGroups[0], { opacity: 1, display: 'block', duration: 1 })
-      .to(stackGroups[0], { opacity: 0, display: 'none', duration: 0.3 });
+    // Segment 1 (0% to 25% scroll): Frontend visible -> then disappears
+    tl.to(stackGroups[0], { autoAlpha: 1, display: 'block', duration: 1 })
+      .to(stackGroups[0], { autoAlpha: 0, display: 'none', duration: 0.3 });
 
-    // Segment 2 (25% to 50% scroll): Backend appears -> then COMPLETELY DISAPPEARS
+    // Segment 2 (25% to 50% scroll): Backend appears + Left column smoothly switches to MY FOCUS
     if (stackGroups[1]) {
-      tl.to(stackGroups[1], { opacity: 1, display: 'block', duration: 1 })
-        .to(stackGroups[1], { opacity: 0, display: 'none', duration: 0.3 });
+      tl.to(leftItems[0], { autoAlpha: 0, display: 'none', duration: 0.3 }, '+=0.02')
+        .to(leftItems[1], { autoAlpha: 1, display: 'flex', duration: 0.5 }, '<')
+        .to(stackGroups[1], { autoAlpha: 1, display: 'block', duration: 1 }, '<')
+        .to(stackGroups[1], { autoAlpha: 0, display: 'none', duration: 0.3 });
     }
 
-    // Segment 3 (50% to 75% scroll): Education appears -> then COMPLETELY DISAPPEARS
+    // Segment 3 (50% to 75% scroll): Education appears -> then disappears
     if (stackGroups[2]) {
-      tl.to(stackGroups[2], { opacity: 1, display: 'block', duration: 1 })
-        .to(stackGroups[2], { opacity: 0, display: 'none', duration: 0.3 });
+      tl.to(stackGroups[2], { autoAlpha: 1, display: 'block', duration: 1 }, '+=0.05')
+        .to(stackGroups[2], { autoAlpha: 0, display: 'none', duration: 0.3 });
     }
 
-    // Segment 4 (75% to 100% scroll): Languages appears -> then COMPLETELY DISAPPEARS near end of hero
+    // Segment 4 (75% to 100% scroll): Languages appears -> then disappears
     if (stackGroups[3]) {
-      tl.to(stackGroups[3], { opacity: 1, display: 'block', duration: 1 })
-        .to(stackGroups[3], { opacity: 0, display: 'none', duration: 0.3 });
+      tl.to(stackGroups[3], { autoAlpha: 1, display: 'block', duration: 1 }, '+=0.05')
+        .to(stackGroups[3], { autoAlpha: 0, display: 'none', duration: 0.3 });
     }
 
     // Fade out ALL hero text & headers as user leaves hero section so NOTHING bleeds into About Me
     if (headingContainer) {
       gsap.to(headingContainer, {
-        opacity: 0,
+        autoAlpha: 0,
+        y: -30,
         ease: 'power1.out',
         scrollTrigger: {
           trigger: section,
-          start: '80% top',
+          start: '82% top',
           end: 'bottom top',
           scrub: true,
         },
@@ -74,7 +86,7 @@ export default function Hero() {
 
     // Fade out scroll indicator on initial scroll
     gsap.to('#scroll-indicator', {
-      opacity: 0,
+      autoAlpha: 0,
       duration: 0.3,
       ease: 'none',
       scrollTrigger: {
@@ -83,14 +95,14 @@ export default function Hero() {
         toggleActions: 'play none none reverse',
       },
     });
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} id="hero" className="section_hero">
       <div id="sticky-wrapper" className="container-hero">
         <div className="hero-wrapper-content">
           <div ref={headingContainerRef} className="hero-heading-container">
-            <div className="hero-headig-left">
+            <div ref={leftColumnRef} className="hero-headig-left">
               <div className="heading-item">
                 <div className="name-heading-wrapper">
                   <div className="item-name" style={{ width: 'auto', padding: '0 0.8rem' }}>
@@ -110,12 +122,9 @@ export default function Hero() {
                   <div className="btn-contact">
                     <div className="btn-tete-wrap">
                       <div className="text-btn">View Projects</div>
-                      <img
-                        src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
-                        loading="lazy"
-                        alt="arrow"
-                        className="icon-btn"
-                      />
+                      <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className="icon-btn">
+                        <path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </div>
                   </div>
                 </a>
@@ -133,25 +142,23 @@ export default function Hero() {
                   <br />
                 </p>
 
-                {/* DEACTIVATED "Get in Touch" button as requested */}
-                <div
+                <a
+                  href="#footernav"
                   className="link-hero w-inline-block"
-                  style={{ opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }}
-                  onClick={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onOpenContact) onOpenContact();
+                  }}
                 >
-                  <div className="btn-contact" style={{ backgroundColor: '#666', borderColor: '#666' }}>
+                  <div className="btn-contact">
                     <div className="btn-tete-wrap">
-                      <div className="text-btn" style={{ color: '#aaa' }}>Get in Touch (Deactivated)</div>
-                      <img
-                        src="https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a35157bf937edec5b945227_SVG%20(1).svg"
-                        loading="lazy"
-                        alt="arrow"
-                        className="icon-btn"
-                        style={{ filter: 'grayscale(100%)' }}
-                      />
+                      <div className="text-btn">Get in Touch</div>
+                      <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className="icon-btn">
+                        <path d="M1 9L9 1M9 1H2M9 1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
 

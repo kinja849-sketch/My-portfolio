@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const PROJECTS = [
   {
@@ -10,22 +11,41 @@ const PROJECTS = [
     category: 'Web Application',
     tagline: 'Building modern, scalable web applications with clean architecture, strong attention to detail, and a focus on performance and user experience.',
     stack: ['JavaScript', 'React', 'NodeJS', 'Tailwind'],
-    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb93af0165d490d94894_feadship.webp',
+    image: '/projects/vicalary.jpg',
+    link: 'https://github.com/',
   },
   {
     name: 'YANHAL',
     category: 'Web Platform',
     tagline: 'Interactive, responsive web platform designed with modern UI standards and efficient frontend state management.',
     stack: ['React', 'TypeScript', 'NodeJS', 'Tailwind'],
-    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beb9dd61285375257c08b_studio.webp',
+    image: '/projects/yanhal.jpg',
+    link: 'https://github.com/',
   },
   {
     name: 'YADA LEARN',
     category: 'EdTech Platform',
     tagline: 'E-learning web application focused on interactive content delivery, real-time database features, and user engagement.',
     stack: ['React', 'Supabase', 'TypeScript', 'NodeJS'],
-    image: 'https://cdn.prod.website-files.com/6a116b867b57804193b667d1/6a2beba279763ce104996b47_rose.webp',
-  }
+    image: '/projects/yada-learn.jpg',
+    link: 'https://github.com/',
+  },
+  {
+    name: 'PHOTONIX',
+    category: 'Automation Hub',
+    tagline: 'High-performance automation dashboard bridging interactive data visualization with responsive real-time controls.',
+    stack: ['React', 'NodeJS', 'GSAP', 'REST API'],
+    image: '/projects/photonix.jpg',
+    link: 'https://github.com/',
+  },
+  {
+    name: 'NEURA-AI',
+    category: 'AI Application',
+    tagline: 'Cutting-edge AI web application interface combining intelligent prompt engineering with neural network data rendering.',
+    stack: ['React', 'TypeScript', 'OpenAI', 'Tailwind'],
+    image: '/projects/neura-ai.jpg',
+    link: 'https://github.com/',
+  },
 ];
 
 export default function WorkSection() {
@@ -34,18 +54,23 @@ export default function WorkSection() {
   const leftCardRef = useRef(null);
   const rightCardRef = useRef(null);
   const introCardRef = useRef(null);
+  const hudPctRef = useRef(null);
+  const hudFillRef = useRef(null);
+  const hudSceneRef = useRef(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     const sectionEl = sectionRef.current;
     const cubeEl = cubeRef.current;
     if (!sectionEl || !cubeEl) return;
 
-    const SCENE_COUNT = PROJECTS.length + 1;
+    const SCENE_COUNT = PROJECTS.length + 1; // 1 Intro + 5 Projects = 6 Scenes
     const STOPS = [
       { rx: 90, ry: 0 },
       { rx: 0, ry: 0 },
       { rx: 0, ry: -90 },
-      { rx: 0, ry: -180 }
+      { rx: 0, ry: -180 },
+      { rx: 0, ry: -270 },
+      { rx: 0, ry: -360 },
     ];
 
     function getCubeTransform(progress) {
@@ -54,7 +79,7 @@ export default function WorkSection() {
       const f = (t - i) < 0.5 ? 2 * (t - i) * (t - i) : -1 + (4 - 2 * (t - i)) * (t - i);
       return {
         rx: STOPS[i].rx + (STOPS[i + 1].rx - STOPS[i].rx) * f,
-        ry: STOPS[i].ry + (STOPS[i + 1].ry - STOPS[i].ry) * f
+        ry: STOPS[i].ry + (STOPS[i + 1].ry - STOPS[i].ry) * f,
       };
     }
 
@@ -64,67 +89,76 @@ export default function WorkSection() {
       const name = cardEl.querySelector('.card-name');
       const tag = cardEl.querySelector('.card-tagline');
       const stack = cardEl.querySelector('.card-stack');
+      const btn = cardEl.querySelector('.card-btn-link');
 
       if (cat) cat.textContent = project.category;
       if (name) name.textContent = project.name;
       if (tag) tag.textContent = project.tagline;
       if (stack) {
         stack.innerHTML = '';
-        project.stack.forEach(tech => {
+        project.stack.forEach((tech) => {
           const span = document.createElement('span');
           span.textContent = tech;
           stack.appendChild(span);
         });
       }
+      if (btn) {
+        btn.setAttribute('href', project.link);
+      }
     }
 
     let lastSceneIndex = -1;
 
-    const st = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: sectionEl,
       start: 'top top',
       end: 'bottom bottom',
       scrub: 0.5,
+      pin: '.sticky-viewport',
+      pinSpacing: false,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         const progress = self.progress;
         const transform = getCubeTransform(progress);
         cubeEl.style.transform = `rotateX(${transform.rx}deg) rotateY(${transform.ry}deg)`;
 
+        const pct = Math.round(progress * 100);
+        if (hudPctRef.current) hudPctRef.current.textContent = String(pct).padStart(3, '0') + '%';
+        if (hudFillRef.current) hudFillRef.current.style.width = `${pct}%`;
+
         const rawScene = progress * (SCENE_COUNT - 1);
         const sceneIndex = Math.min(Math.floor(rawScene), SCENE_COUNT - 1);
+
+        if (hudSceneRef.current) {
+          hudSceneRef.current.textContent = sceneIndex === 0 ? 'OVERVIEW' : (PROJECTS[sceneIndex - 1]?.category || 'OVERVIEW');
+        }
 
         if (sceneIndex !== lastSceneIndex) {
           lastSceneIndex = sceneIndex;
 
           if (sceneIndex === 0) {
-            if (introCardRef.current) introCardRef.current.style.opacity = '1';
-            if (leftCardRef.current) leftCardRef.current.style.opacity = '0';
-            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
-          } else if (sceneIndex === 1) {
-            if (introCardRef.current) introCardRef.current.style.opacity = '0';
-            updateCardContent(leftCardRef.current, PROJECTS[0]);
-            if (leftCardRef.current) leftCardRef.current.style.opacity = '1';
-            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
-          } else if (sceneIndex === 2) {
-            if (introCardRef.current) introCardRef.current.style.opacity = '0';
-            updateCardContent(rightCardRef.current, PROJECTS[1]);
-            if (leftCardRef.current) leftCardRef.current.style.opacity = '0';
-            if (rightCardRef.current) rightCardRef.current.style.opacity = '1';
-          } else if (sceneIndex === 3) {
-            if (introCardRef.current) introCardRef.current.style.opacity = '0';
-            updateCardContent(leftCardRef.current, PROJECTS[2]);
-            if (leftCardRef.current) leftCardRef.current.style.opacity = '1';
-            if (rightCardRef.current) rightCardRef.current.style.opacity = '0';
+            if (introCardRef.current) gsap.to(introCardRef.current, { autoAlpha: 1, duration: 0.3 });
+            if (leftCardRef.current) gsap.to(leftCardRef.current, { autoAlpha: 0, duration: 0.3 });
+            if (rightCardRef.current) gsap.to(rightCardRef.current, { autoAlpha: 0, duration: 0.3 });
+          } else {
+            if (introCardRef.current) gsap.to(introCardRef.current, { autoAlpha: 0, duration: 0.3 });
+            const project = PROJECTS[sceneIndex - 1];
+            if (sceneIndex % 2 !== 0) {
+              // Odd project index (1, 3, 5) -> Left Card
+              updateCardContent(leftCardRef.current, project);
+              if (leftCardRef.current) gsap.to(leftCardRef.current, { autoAlpha: 1, duration: 0.3 });
+              if (rightCardRef.current) gsap.to(rightCardRef.current, { autoAlpha: 0, duration: 0.3 });
+            } else {
+              // Even project index (2, 4) -> Right Card
+              updateCardContent(rightCardRef.current, project);
+              if (leftCardRef.current) gsap.to(leftCardRef.current, { autoAlpha: 0, duration: 0.3 });
+              if (rightCardRef.current) gsap.to(rightCardRef.current, { autoAlpha: 1, duration: 0.3 });
+            }
           }
         }
-      }
+      },
     });
-
-    return () => {
-      st.kill();
-    };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} id="work" className="work-section">
@@ -144,7 +178,7 @@ export default function WorkSection() {
             </div>
           </div>
 
-          {/* Left Card Details (All links deactivated) */}
+          {/* Left Card Details */}
           <div
             ref={leftCardRef}
             id="card-left"
@@ -159,7 +193,7 @@ export default function WorkSection() {
               opacity: 0,
               pointerEvents: 'none',
               transition: 'opacity 0.4s ease, transform 0.4s ease',
-              zIndex: 20
+              zIndex: 20,
             }}
           >
             <div style={{ padding: '1.75rem 1.5rem', background: 'rgba(12,12,12,0.92)', border: '1px solid rgba(255,255,255,0.07)' }}>
@@ -178,17 +212,19 @@ export default function WorkSection() {
                   <span key={idx}>{item}</span>
                 ))}
               </div>
-              <div
-                className="card-btn"
-                style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
-                onClick={(e) => e.preventDefault()}
+              <a
+                className="card-btn card-btn-link"
+                href={PROJECTS[0].link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ pointerEvents: 'auto', display: 'inline-block' }}
               >
-                View Project (Deactivated)
-              </div>
+                View Project →
+              </a>
             </div>
           </div>
 
-          {/* Right Card Details (All links deactivated) */}
+          {/* Right Card Details */}
           <div
             ref={rightCardRef}
             id="card-right"
@@ -203,7 +239,7 @@ export default function WorkSection() {
               opacity: 0,
               pointerEvents: 'none',
               transition: 'opacity 0.4s ease, transform 0.4s ease',
-              zIndex: 20
+              zIndex: 20,
             }}
           >
             <div style={{ padding: '1.75rem 1.5rem', background: 'rgba(12,12,12,0.92)', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'right' }}>
@@ -222,17 +258,19 @@ export default function WorkSection() {
                   <span key={idx}>{item}</span>
                 ))}
               </div>
-              <div
-                className="card-btn"
-                style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
-                onClick={(e) => e.preventDefault()}
+              <a
+                className="card-btn card-btn-link"
+                href={PROJECTS[1].link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ pointerEvents: 'auto', display: 'inline-block' }}
               >
-                View Project (Deactivated)
-              </div>
+                View Project →
+              </a>
             </div>
           </div>
 
-          {/* 3D Prism Cube: Uses static project images (video playback removed as requested) */}
+          {/* 3D Prism Cube */}
           <div
             ref={cubeRef}
             id="prism-cube"
@@ -242,7 +280,7 @@ export default function WorkSection() {
               position: 'relative',
               transformStyle: 'preserve-3d',
               transform: 'rotateX(90deg) rotateY(0deg)',
-              willChange: 'transform'
+              willChange: 'transform',
             }}
           >
             <div className="cube-face f-top" style={{ position: 'absolute', left: 0, right: 0, top: 'calc(50% - min(72vw, 550px)/2)', width: '100%', height: 'min(72vw, 550px)', transform: 'rotateX(-90deg) translateZ(calc(calc(min(72vw, 550px) * 9 / 16) / 2))' }}>
@@ -258,38 +296,30 @@ export default function WorkSection() {
               <img src={PROJECTS[2].image} alt={PROJECTS[2].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-left" style={{ position: 'absolute', inset: 0, transform: 'rotateY(-90deg) translateZ(calc(min(72vw, 550px) / 2))' }}>
-              <img src={PROJECTS[0].image} alt={PROJECTS[0].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={PROJECTS[3].image} alt={PROJECTS[3].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="cube-face f-bottom" style={{ position: 'absolute', left: 0, right: 0, top: 'calc(50% - min(72vw, 550px)/2)', width: '100%', height: 'min(72vw, 550px)', transform: 'rotateX(90deg) translateZ(calc(calc(min(72vw, 550px) * 9 / 16) / 2))' }}>
-              <img src={PROJECTS[1].image} alt={PROJECTS[1].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={PROJECTS[4].image} alt={PROJECTS[4].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
 
-          {/* Intro Card */}
+          {/* Intro Card Removed - Title is at top-left header so 3D frame background is completely unobstructed */}
           <div
             ref={introCardRef}
             id="intro-card"
             style={{
-              position: 'absolute',
-              textAlign: 'center',
-              maxWidth: '32rem',
+              display: 'none',
               pointerEvents: 'none',
-              opacity: 1,
-              transition: 'opacity 0.4s ease'
+              opacity: 0,
             }}
-          >
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.52rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem' }}>
-              Selected Work · Projects
-            </p>
-            <h2 style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 900, fontSize: '4.5rem', letterSpacing: '-0.05em', lineHeight: 0.88, color: 'rgba(255,255,255,0.92)' }}>
-              Selected{' '}
-              <span style={{ fontStyle: 'italic', fontWeight: 400, color: 'rgba(255,255,255,0.18)' }}>
-                Work
-              </span>
-            </h2>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255, 255, 255, 0.9)', marginTop: '2rem' }}>
-              Scroll to explore
-            </p>
+          ></div>
+          {/* HUD Progress Bar Indicator */}
+          <div className="hud-container" style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20 }}>
+            <div ref={hudPctRef} id="hud-pct" style={{ fontFamily: 'monospace', fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)' }}>000%</div>
+            <div style={{ width: '6rem', height: '1px', background: 'rgba(255,255,255,0.1)', marginTop: '0.4rem', position: 'relative' }}>
+              <div ref={hudFillRef} id="hud-fill" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '0%', background: '#fff', opacity: 0.75 }}></div>
+            </div>
+            <div ref={hudSceneRef} id="hud-scene" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.45rem', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.3)', marginTop: '0.3rem', textTransform: 'uppercase' }}>OVERVIEW</div>
           </div>
         </div>
       </div>
